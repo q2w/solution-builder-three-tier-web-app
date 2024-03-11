@@ -1,0 +1,18 @@
+[
+    {
+        "id": "add_load_balancer",
+        "display_name": "Add Load Balancer",
+        "description": "Adds L7 Application Load Balancer to the three tier web app solution",
+        "operations": [
+            {
+                "type": "ADD",
+                "composition_unit_id": "terraform-google-solution-builder-load-balancer/three-tier-app-load-balancer"
+            },
+            {
+                "type": "CONNECT",
+                "source_composition_unit_id": "terraform-google-solution-builder-cloud-run/three-tier-app-frontend",
+                "destination_composition_unit_id": "terraform-google-solution-builder-load-balancer/three-tier-app-load-balancer"
+            }
+        ]
+    }
+]
