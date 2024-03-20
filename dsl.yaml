@@ -18,7 +18,6 @@ resources:
   config:
     cloud_run_service_name:
     cloud_run_service_image:
-    backend_service_endpoint:
   bindings:
   - target: "terraform-google-solution-builder-vpc-network/three-tier-app-vpc-network"
   - target: "terraform-google-solution-builder-cloud-sql/three-tier-app-database"
@@ -27,11 +26,6 @@ resources:
   config:
     cloud_run_service_name:
     cloud_run_service_image:
-    redis_host:
-    redis_port:
-    cloud_sql_database_host:
-    cloud_sql_database_connection_name:
-    cloud_sql_database_name:
     vpc_access_connector_id:
   bindings:
   - target: "terraform-google-solution-builder-cloud-run/three-tier-app-backend"

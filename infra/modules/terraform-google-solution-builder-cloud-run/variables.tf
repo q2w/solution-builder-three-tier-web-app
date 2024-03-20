@@ -34,50 +34,26 @@ variable "cloud_run_service_image" {
   description = "Cloud Run service container image"
 }
 
-variable "redis_host" {
-  type = string
-  default = null
-  description = "Redis host"
-}
-
-variable "redis_port" {
-  type = string
-  default = null
-  description = "Redis port"
-}
-
-variable "cloud_sql_database_host" {
-  type = string
-  default = null
-  description = "Cloud SQL Database host"
-}
-
-variable "cloud_sql_database_connection_name" {
-  type = string
-  default = null
-  description = "Cloud SQL Database connection name"
-}
-
-variable "cloud_sql_database_name" {
-  type = string
-  default = null
-  description = "Cloud SQL Database name"
-}
-
-variable "backend_service_endpoint" {
-  type = string
-  default = null
-  description = "Any backend service endpoint that this cloud run service calls"
-}
-
 variable "vpc_access_connector_id" {
   type = string
   default = null
   description = "VPC access connector ID used for accessing a VPC network"
 }
 
-variable "cloud_sql_dependency" {
-  type = any
-  default = null
-  description = "Dependency on Cloud SQL"
+variable "env_variables" {
+  type = map(string)
+  default = {}
+  description = "Environment variables for cloud run service"
+}
+
+variable "annotations" {
+  type = map(string)
+  default = {}
+  description = "Annotations for cloud run service"
+}
+
+variable "dependencies" {
+  type = list(any)
+  default = []
+  description = "Dependencies of cloud run service"
 }

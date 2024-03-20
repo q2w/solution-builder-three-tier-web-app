@@ -36,7 +36,7 @@ resource "random_string" "service_account_id" {
 
 resource "google_service_account" "runsa" {
   project      = var.project_id
-  account_id   = random_string.service_account_id.result
+  account_id   = random_string.service_account_id
   display_name = "Service Account for Cloud Run"
 }
 
@@ -61,50 +61,34 @@ resource "google_cloud_run_service" "main" {
           container_port = 80
         }
         env {
-          name  = "REDIS_HOST"
-          value = var.redis_host
-        }
-        env {
-          name  = "REDIS_PORT"
-          value = var.redis_port
-        }
-        env {
-          name  = "CLOUD_RUN_SERVICE_ACCOUNT"
+          name = "CLOUD_RUN_SERVICE_ACCOUNT"
           value = google_service_account.runsa.email
         }
-        env {
-          name  = "CLOUD_SQL_DATABASE_HOST"
-          value = var.cloud_sql_database_host
-        }
-        env {
-          name  = "CLOUD_SQL_DATABASE_CONNECTION_NAME"
-          value = var.cloud_sql_database_connection_name
-        }
-        env {
-          name  = "CLOUD_SQL_DATABASE_NAME"
-          value = var.cloud_sql_database_name
-        }
-        env {
-          name  = "BACKEND_SERVICE_ENDPOINT"
-          value = var.backend_service_endpoint
+        // Dynamic block to set environment variables
+        dynamic "env" {
+          for_each = var.env_variables
+          content {
+            name  = env.key
+            value = env.value
+          }
         }
       }
     }
     metadata {
-      annotations = {
+      annotations = merge(
+      {
         "autoscaling.knative.dev/maxScale"        = "8"
-        "run.googleapis.com/cloudsql-instances"   = var.cloud_sql_database_connection_name
         "run.googleapis.com/client-name"          = "terraform"
         "run.googleapis.com/vpc-access-egress"    = var.vpc_access_connector_id != null ? "all" : null
         "run.googleapis.com/vpc-access-connector" = var.vpc_access_connector_id
-      }
+      },
+      var.annotations
+      )
     }
   }
 
   autogenerate_revision_name = true
-  depends_on = [
-    var.cloud_sql_dependency
-  ]
+  depends_on = var.dependencies
 }
 
 resource "google_cloud_run_service_iam_member" "noauth_api" {

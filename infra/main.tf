@@ -29,14 +29,18 @@ module "three-tier-app-backend" {
     region = var.region
     cloud_run_service_name = var.three-tier-app-backend-cloud_run_service_name
     cloud_run_service_image = var.three-tier-app-backend-cloud_run_service_image
-    backend_service_endpoint = var.three-tier-app-backend-backend_service_endpoint
-    redis_host = module.three-tier-app-cache.redis_host
-    redis_port = module.three-tier-app-cache.redis_port
-    cloud_sql_database_host = module.three-tier-app-database.database_host
-    cloud_sql_database_connection_name = module.three-tier-app-database.database_connection_name
-    cloud_sql_database_name = module.three-tier-app-database.database_name
-    cloud_sql_dependency = module.three-tier-app-database.module_dependency
-    vpc_access_connector_id = module.three-tier-app-vpc-network.vpc_access_connector_id   
+    env_variables = {
+        "CLOUD_SQL_DATABASE_HOST" = module.three-tier-app-database.database_host
+        "CLOUD_SQL_DATABASE_CONNECTION_NAME" = module.three-tier-app-database.database_connection_name
+        "CLOUD_SQL_DATABASE_NAME" = module.three-tier-app-database.database_name
+        "REDIS_HOST" = module.three-tier-app-cache.redis_host
+        "REDIS_PORT" = module.three-tier-app-cache.redis_port
+    }
+    dependencies = [module.three-tier-app-database.module_dependency]
+    annotations = {
+        "run.googleapis.com/cloudsql-instances" = module.three-tier-app-database.database_connection_name
+    }
+    vpc_access_connector_id = module.three-tier-app-vpc-network.vpc_access_connector_id
 }
 
 module "three-tier-app-frontend" {
@@ -45,11 +49,8 @@ module "three-tier-app-frontend" {
     region = var.region
     cloud_run_service_name = var.three-tier-app-frontend-cloud_run_service_name
     cloud_run_service_image = var.three-tier-app-frontend-cloud_run_service_image
-    backend_service_endpoint = module.three-tier-app-backend.cloud_run_service_endpoint
-    redis_host = var.three-tier-app-frontend-redis_host
-    redis_port = var.three-tier-app-frontend-redis_port
-    cloud_sql_database_host = var.three-tier-app-frontend-cloud_sql_database_host
-    cloud_sql_database_connection_name = var.three-tier-app-frontend-cloud_sql_database_connection_name
-    cloud_sql_database_name = var.three-tier-app-frontend-cloud_sql_database_name
+    env_variables = {
+        "BACKEND_SERVICE_ENDPOINT" = module.three-tier-app-backend.cloud_run_service_endpoint
+    }
     vpc_access_connector_id = var.three-tier-app-frontend-vpc_access_connector_id
 }
