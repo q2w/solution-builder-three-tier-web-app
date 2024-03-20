@@ -36,7 +36,7 @@ resource "random_string" "service_account_id" {
 
 resource "google_service_account" "runsa" {
   project      = var.project_id
-  account_id   = random_string.service_account_id
+  account_id   = random_string.service_account_id.result
   display_name = "Service Account for Cloud Run"
 }
 
@@ -88,7 +88,7 @@ resource "google_cloud_run_service" "main" {
   }
 
   autogenerate_revision_name = true
-  depends_on = var.dependencies
+  depends_on = [var.dependencies]
 }
 
 resource "google_cloud_run_service_iam_member" "noauth_api" {
