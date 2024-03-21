@@ -18,10 +18,10 @@
 resource "google_redis_instance" "main" {
   authorized_network      = var.network_name
   connect_mode            = "DIRECT_PEERING"
-  memory_size_gb          = 1
+  memory_size_gb          = var.memory_size_gb
   name                    = var.redis_instance_name
   project                 = var.project_id
-  redis_version           = "REDIS_6_X"
+  redis_version           = var.redis_version
   region                  = var.region
   tier                    = "BASIC"
   transit_encryption_mode = "DISABLED"

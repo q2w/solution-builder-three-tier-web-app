@@ -34,3 +34,19 @@ variable "redis_instance_name" {
   type = string
   description = "Redis instance name"
 }
+
+variable "memory_size_gb" {
+  type = number
+  default = 1
+  description = "Redis memory size in GiB"
+}
+
+variable "redis_version" {
+  type = string
+  description = "The version of Redis software"
+  default = "REDIS_6_X"
+  validation {
+    condition     = var.redis_version == "REDIS_3_2" || var.redis_version == "REDIS_4_0" || var.redis_version == "REDIS_5_0" || var.redis_version == "REDIS_6_X" || var.redis_version == "REDIS_7_0"
+    error_message = "Invalid redis version"
+  }
+}

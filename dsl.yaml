@@ -6,11 +6,15 @@ resources:
 - id: "terraform-google-solution-builder-redis/three-tier-app-cache"
   config:
     redis_instance_name:
+    memory_size_gb: 1
+    redis_version: REDIS_6_X
   bindings:
   - target: "terraform-google-solution-builder-vpc-network/three-tier-app-vpc-network"
 - id: "terraform-google-solution-builder-cloud-sql/three-tier-app-database"
   config:
     database_name:
+    database_version: POSTGRES_14
+    disk_size: 10
   bindings:
   - target: "terraform-google-solution-builder-vpc-network/three-tier-app-vpc-network"
   - target: "terraform-google-solution-builder-cloud-run/three-tier-app-backend"

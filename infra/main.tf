@@ -11,6 +11,8 @@ module "three-tier-app-cache" {
     region = var.region
     redis_instance_name = var.three-tier-app-cache-redis_instance_name
     network_name = module.three-tier-app-vpc-network.network_name
+    memory_size_gb = var.three-tier-app-cache-memory_size_gb
+    redis_version = var.three-tier-app-cache-redis_version
 }
 
 module "three-tier-app-database" {
@@ -21,6 +23,8 @@ module "three-tier-app-database" {
     network_name = module.three-tier-app-vpc-network.network_name
     network_dependency = module.three-tier-app-vpc-network.module_dependency
     user_service_account_name = module.three-tier-app-backend.cloud_run_service_account_name
+    database_version = var.three-tier-app-database-database_version
+    disk_size = var.three-tier-app-database-disk_size
 }
 
 module "three-tier-app-backend" {

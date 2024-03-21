@@ -16,14 +16,14 @@
 
 resource "google_sql_database_instance" "main" {
   name             = "${var.database_name}-instance"
-  database_version = "POSTGRES_14"
+  database_version = var.database_version
   region           = var.region
   project          = var.project_id
   settings {
     tier                  = "db-g1-small"
     disk_autoresize       = true
     disk_autoresize_limit = 0
-    disk_size             = 10
+    disk_size             = var.disk_size
     disk_type             = "PD_SSD"
     ip_configuration {
       ipv4_enabled    = var.network_name != null ? false : true
