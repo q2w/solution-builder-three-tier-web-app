@@ -33,13 +33,7 @@ module "three-tier-app-backend" {
     region = var.region
     cloud_run_service_name = var.three-tier-app-backend-cloud_run_service_name
     cloud_run_service_image = var.three-tier-app-backend-cloud_run_service_image
-    env_variables = {
-        "CLOUD_SQL_DATABASE_HOST" = module.three-tier-app-database.database_host
-        "CLOUD_SQL_DATABASE_CONNECTION_NAME" = module.three-tier-app-database.database_connection_name
-        "CLOUD_SQL_DATABASE_NAME" = module.three-tier-app-database.database_name
-        "REDIS_HOST" = module.three-tier-app-cache.redis_host
-        "REDIS_PORT" = module.three-tier-app-cache.redis_port
-    }
+    env_variables = merge(module.three-tier-app-cache.env_variables, module.three-tier-app-database.env_variables)
     dependencies = [module.three-tier-app-database.module_dependency]
     annotations = {
         "run.googleapis.com/cloudsql-instances" = module.three-tier-app-database.database_connection_name
@@ -53,8 +47,6 @@ module "three-tier-app-frontend" {
     region = var.region
     cloud_run_service_name = var.three-tier-app-frontend-cloud_run_service_name
     cloud_run_service_image = var.three-tier-app-frontend-cloud_run_service_image
-    env_variables = {
-        "BACKEND_SERVICE_ENDPOINT" = module.three-tier-app-backend.cloud_run_service_endpoint
-    }
+    env_variables = merge(module.three-tier-app-backend.env_variables)
     vpc_access_connector_id = var.three-tier-app-frontend-vpc_access_connector_id
 }

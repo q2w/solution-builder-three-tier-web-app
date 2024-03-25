@@ -22,6 +22,12 @@ output "cloud_run_service_account_name" {
   value = "${google_service_account.runsa.account_id}@${var.project_id}.iam"
 }
 
+output "env_variables" {
+  value = {
+    "BACKEND_SERVICE_ENDPOINT" = google_cloud_run_service.main.status[0].url
+  }
+}
+
 output "module_dependency" {
   value = {}
   depends_on = [google_cloud_run_service.main, google_cloud_run_service_iam_member.noauth_api, google_project_iam_member.allrun, google_service_account.runsa]

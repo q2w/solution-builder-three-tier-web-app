@@ -26,6 +26,14 @@ output "database_name" {
   value = google_sql_database.database.name
 }
 
+output "env_variables" {
+  value = {
+    "CLOUD_SQL_DATABASE_HOST" = google_sql_database_instance.main.ip_address[0].ip_address
+    "CLOUD_SQL_DATABASE_CONNECTION_NAME" = google_sql_database_instance.main.connection_name
+    "CLOUD_SQL_DATABASE_NAME" = google_sql_database.database.name
+  }
+}
+
 output "module_dependency" {
   value = {}
   depends_on = [google_sql_database.database, google_sql_database_instance.main, google_sql_user.main]
