@@ -16,13 +16,16 @@
 
 output "network_name" {
   value = google_compute_network.main.name
+  description = "VPC network name"
 }
 
 output "vpc_access_connector_id" {
   value = google_vpc_access_connector.main.id
+  description = "VPC access connector ID"
 }
 
 output "module_dependency" {
   value = {}
   depends_on = [google_compute_network.main, google_compute_global_address.main, google_vpc_access_connector.main, google_service_networking_connection.main]
+  description = "Dependency variable that can be used by other modules to depend on this module"
 }
