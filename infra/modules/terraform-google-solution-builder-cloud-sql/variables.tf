@@ -52,7 +52,7 @@ variable "database_version" {
   description = "Database version"
   validation {
     condition     = var.database_version == "MYSQL_5_6" || var.database_version == "MYSQL_5_7" || var.database_version == "MYSQL_8_0" || var.database_version == "POSTGRES_9_6" || var.database_version == "POSTGRES_10" || var.database_version == "POSTGRES_11" || var.database_version == "POSTGRES_12" || var.database_version == "POSTGRES_13" || var.database_version == "POSTGRES_14" || var.database_version == "POSTGRES_15" || var.database_version == "SQLSERVER_2017_STANDARD" || var.database_version == "SQLSERVER_2017_ENTERPRISE" || var.database_version == "SQLSERVER_2017_EXPRESS" || var.database_version == "SQLSERVER_2017_WEB" || var.database_version == "SQLSERVER_2019_STANDARD" || var.database_version == "SQLSERVER_2019_ENTERPRISE" || var.database_version == "SQLSERVER_2019_EXPRESS" || var.database_version == "SQLSERVER_2019_WEB"
-    error_message = "Invalid database version"
+    error_message = "Invalid database version."
   }
 }
 

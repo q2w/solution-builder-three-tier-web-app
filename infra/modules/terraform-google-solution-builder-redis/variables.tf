@@ -47,6 +47,6 @@ variable "redis_version" {
   default = "REDIS_6_X"
   validation {
     condition     = var.redis_version == "REDIS_3_2" || var.redis_version == "REDIS_4_0" || var.redis_version == "REDIS_5_0" || var.redis_version == "REDIS_6_X" || var.redis_version == "REDIS_7_0"
-    error_message = "Invalid redis version"
+    error_message = "Invalid redis version."
   }
 }
