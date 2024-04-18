@@ -16,10 +16,12 @@
 
 output "redis_host" {
   value = google_redis_instance.main.host
+  description = "Redis host"
 }
 
 output "redis_port" {
   value = google_redis_instance.main.port
+  description = "Redis port"
 }
 
 output "env_variables" {
@@ -27,9 +29,11 @@ output "env_variables" {
     "REDIS_HOST" = google_redis_instance.main.host
     "REDIS_PORT" = google_redis_instance.main.port
   }
+  description = "Environment variables exposed by the Redis module that can be used by compute resources to connect to the redis instance"
 }
 
 output "module_dependency" {
   value = {}
   depends_on = [google_redis_instance.main]
+  description = "Dependency variable that can be used by other modules to depend on this module"
 }

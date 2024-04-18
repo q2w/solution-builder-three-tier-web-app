@@ -16,14 +16,17 @@
 
 output "database_connection_name" {
   value = google_sql_database_instance.main.connection_name
+  description = "Cloud SQL database connection name"
 }
 
 output "database_host" {
   value = google_sql_database_instance.main.ip_address[0].ip_address
+  description = "Cloud SQL database host"
 }
 
 output "database_name" {
   value = google_sql_database.database.name
+  description = "Cloud SQL database name"
 }
 
 output "env_variables" {
@@ -32,9 +35,11 @@ output "env_variables" {
     "CLOUD_SQL_DATABASE_CONNECTION_NAME" = google_sql_database_instance.main.connection_name
     "CLOUD_SQL_DATABASE_NAME" = google_sql_database.database.name
   }
+  description = "Environment variables exposed by the Cloud SQL module that can be used by compute resources to connect to the Cloud SQL database"
 }
 
 output "module_dependency" {
   value = {}
   depends_on = [google_sql_database.database, google_sql_database_instance.main, google_sql_user.main]
+  description = "Dependency variable that can be used by other modules to depend on this module"
 }

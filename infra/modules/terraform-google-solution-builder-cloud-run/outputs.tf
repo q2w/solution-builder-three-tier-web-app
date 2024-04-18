@@ -16,19 +16,33 @@
 
 output "cloud_run_service_endpoint" {
   value = google_cloud_run_service.main.status[0].url
+  description = "Cloud Run service endpoint"
+}
+
+output "cloud_run_service_name" {
+  value = google_cloud_run_service.main.name
+  description = "Cloud Run service name"
+}
+
+output "cloud_run_service_region" {
+  description = "Cloud Run service region"
+  value = google_cloud_run_service.main.location
 }
 
 output "cloud_run_service_account_name" {
   value = "${google_service_account.runsa.account_id}@${var.project_id}.iam"
+  description = "Cloud Run service account name"
 }
 
 output "env_variables" {
   value = {
     "BACKEND_SERVICE_ENDPOINT" = google_cloud_run_service.main.status[0].url
   }
+  description = "Cloud Run service endpoint exposed as environment variable which can be used by other compute resources to communicate with this cloud run service"
 }
 
 output "module_dependency" {
   value = {}
   depends_on = [google_cloud_run_service.main, google_cloud_run_service_iam_member.noauth_api, google_project_iam_member.allrun, google_service_account.runsa]
+  description = "Dependency variable that can be used by other modules to depend on this module"
 }
