@@ -12,10 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# cloud build for creating docker image
+#steps:
+#- name: 'gcr.io/cloud-builders/docker'
+#  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/three-tier-app-fe:$_IMAGE_TAG', '.' ]
+#- name: 'gcr.io/cloud-builders/docker'
+#  args: ['push', 'gcr.io/$PROJECT_ID/three-tier-app-fe:$_IMAGE_TAG']
+#substitutions:
+#  _IMAGE_TAG: latest
+
+
+# cloud build for creating GCE VM image
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/three-tier-app-fe:$_IMAGE_TAG', '.' ]
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/three-tier-app-fe:$_IMAGE_TAG']
-substitutions:
-  _IMAGE_TAG: latest
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'instances', 'create', 'my-debian-instance-frontend',
+         '--zone', 'us-central1-a',
+         '--image', 'projects/debian-cloud/global/images/debian-12-bookworm-v20240415',
+  '--metadata-from-file', 'startup-script=startup-script.sh']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'scp', '--recurse', './www/',
+         'my-debian-instance-frontend:/var/www/html',
+         '--zone', 'us-central1-a']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'ssh', 'my-debian-instance-frontend',
+         '--zone', 'us-central1-a',
+          '--command', 'cp -r /var/www/html/www/* /var/www/html && rm -rf /var/www/html/www']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'instances', 'stop', 'my-debian-instance-frontend',
+         '--zone', 'us-central1-a']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'images', 'create', 'three-tier-app-fe',
+         '--source-disk', 'my-debian-instance-frontend',
+         '--source-disk-zone', 'us-central1-a',
+         '--storage-location', 'us']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['compute', 'instances', 'delete', 'my-debian-instance-frontend',
+         '--zone', 'us-central1-a', '--quiet']
