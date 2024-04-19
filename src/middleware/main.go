@@ -47,7 +47,6 @@ func main() {
 	redisPort := os.Getenv("REDIS_PORT")
 	port := os.Getenv("PORT")
 
-  fmt.Println("port: ", port)
 	if err := storage.Init(user, pass, host, name, conn, redisHost, redisPort, true); err != nil {
 		log.Fatalf("cannot initialize storage systems: %s", err)
 	}

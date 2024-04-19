@@ -28,10 +28,7 @@ locals {
 
   # Combine the environment variables script with the user's script
   combined_startup_script = "${local.service_account_env}\n\n${local.env_script}\n\n${var.startup_script}"
-}
 
-# Roles assigned to cloud run service account.
-locals {
   run_roles = [
     "roles/cloudsql.instanceUser",
     "roles/cloudsql.client",
@@ -49,7 +46,7 @@ resource "random_string" "service_account_id" {
 resource "google_service_account" "runsa" {
   project      = var.project_id
   account_id   = random_string.service_account_id.result
-  display_name = "Service Account for Cloud Run"
+  display_name = "Service Account for instance template"
 }
 
 resource "google_project_iam_member" "allrun" {
@@ -67,7 +64,7 @@ data "google_compute_zones" "available" {
 resource "google_compute_firewall" "allow_http" {
   name        = var.public_access_firewall_rule_name
   network  =  var.network_name
-  project = "abhiwa-test-30112023"
+  project = var.project_id
   allow {
     protocol = "tcp"
     ports    = ["80"]
@@ -79,7 +76,7 @@ resource "google_compute_firewall" "allow_http" {
 resource "google_compute_address" "static_ip" {
   name   = var.static_ip_name
   region = var.region
-  project = "abhiwa-test-30112023"
+  project = var.project_id
 }
 
 module "instance_template" {
@@ -110,6 +107,22 @@ module "mig" {
   instance_template         = module.instance_template.self_link
   region                    = var.region
   distribution_policy_zones = data.google_compute_zones.available.names
+  health_check_name = var.health_check_name
+  health_check = {
+    type                = var.health_check_name != "" ? "http" : ""
+    initial_delay_sec   = 30
+    check_interval_sec  = 30
+    healthy_threshold   = 1
+    timeout_sec         = 10
+    unhealthy_threshold = 5
+    response            = ""
+    proxy_header        = "NONE"
+    port                = var.health_check_port
+    request             = ""
+    request_path        = var.health_check_request_path
+    host                = ""
+    enable_logging      = false
+  }
   named_ports = var.load_balancer_port != null ? [
     {
       name = local.load_balancer_port_name

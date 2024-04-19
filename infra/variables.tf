@@ -1,24 +1,20 @@
 variable "project_id" {
   type = string
-  default = "abhiwa-test-30112023"
   description = "GCP Project ID"
 }
 
 variable "region" {
   type = string
-  default = "us-central1"
   description = "GCP Region"
 }
 
 variable "three-tier-app-vpc-network-network_name" {
   type = string
-  default = "vpc-network-1"
   description = "VPC network name"
 }
 
 variable "three-tier-app-cache-redis_instance_name" {
   type = string
-  default = "redis-instance"
   description = "Redis instance name"
 }
 
@@ -36,7 +32,6 @@ variable "three-tier-app-cache-memory_size_gb" {
 
 variable "three-tier-app-database-database_name" {
   type = string
-  default = "database"
   description = "Database name"
 }
 
@@ -52,32 +47,43 @@ variable "three-tier-app-database-disk_size" {
   description = "The size of data disk in GB"
 }
 
-variable "three-tier-app-backend-cloud_run_service_name" {
+variable "three-tier-app-backend-mig_service_name" {
   type = string
-  default = "backend-service"
-  description = "Cloud Run service name"
+  description = "Backend service name"
 }
 
-variable "three-tier-app-backend-cloud_run_service_image" {
+variable "three-tier-app-backend-mig_service_image" {
   type = string
-  default = "image-3"
-  description = "Cloud Run service container image"
+  description = "VM image for backend"
 }
 
-variable "three-tier-app-frontend-cloud_run_service_name" {
+variable "three-tier-app-frontend-mig_service_name" {
   type = string
-  default = "frontend-service"
-  description = "Cloud Run service name"
+  description = "Frontend service name"
 }
 
-variable "three-tier-app-frontend-cloud_run_service_image" {
+variable "three-tier-app-frontend-mig_service_image" {
   type = string
-  default = "image-1"
-  description = "Cloud Run service container image"
+  description = "VM image for frontend"
 }
 
-variable "three-tier-app-frontend-vpc_access_connector_id" {
+variable "three-tier-app-backend-public-access-firewall-rule-name" {
   type = string
-  default = null
-  description = "VPC access connector ID used for accessing a VPC network"
+  description = "Name of the firewall rule for allowing http request to backend"
 }
+
+variable "three-tier-app-backend-static-ip-name" {
+  type = string
+  description = "Name of the static ip created for backend"
+}
+
+variable "three-tier-app-frontend-public-access-firewall-rule-name" {
+  type = string
+  description = "Name of the firewall rule for allowing http request to frontend"
+}
+
+variable "three-tier-app-frontend-static-ip-name" {
+  type = string
+  description = "Name of the static ip created for frontend"
+}
+

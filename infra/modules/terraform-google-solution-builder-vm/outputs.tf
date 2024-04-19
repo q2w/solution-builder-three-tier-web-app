@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-output "load_balancer_port_name" {
-  description = "Port name for load balancer to connect to the VM instances"
-  value       = local.load_balancer_port_name
+output "managed_instance_group_url" {
+  value = module.mig.instance_group
+  description = "Managed instance group URL"
 }
 
-output "managed_instance_group" {
-  description = "Managed instance group"
-  value = module.mig
+output "health_check_link" {
+  value = var.health_check_name != "" ? module.mig.health_check_self_links[0] : ""
+  description = "Health check link"
 }
 
 output "module_dependency" {
@@ -30,12 +30,12 @@ output "module_dependency" {
   description = "Dependency variable that can be used by other modules to depend on this module"
 }
 
-output "cloud_run_service_account_name" {
-  value = "${google_service_account.runsa.account_id}@${var.project_id}.iam"
-}
-
 output "env_variables" {
   value = {
     "BACKEND_SERVICE_ENDPOINT" = google_compute_address.static_ip.address
   }
+}
+
+output "mig_service_account_name" {
+  value = "${google_service_account.runsa.account_id}@${var.project_id}.iam"
 }

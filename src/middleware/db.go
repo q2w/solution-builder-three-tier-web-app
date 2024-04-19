@@ -44,7 +44,6 @@ func (s *SQLStorage) Init(user, password, host, name, conn string) error {
 	if password == "" {
 		s.log("method is service account")
 		trimmedUser := strings.ReplaceAll(user, ".gserviceaccount.com", "")
-		fmt.Println("Connection: ", instanceConnectionName)
 		if s.db, err = connectWithConnector(trimmedUser, password, name, instanceConnectionName); err != nil {
 			return fmt.Errorf("could not open connection using Service Account: %s", err)
 		}
@@ -83,13 +82,13 @@ func (s *SQLStorage) Init(user, password, host, name, conn string) error {
 func connectWithConnector(user, pass, name, connection string) (*sql.DB, error) {
 	cleanup, err := pgxv4.RegisterDriver(
 		"cloudsql-postgres",
-		 cloudsqlconn.WithIAMAuthN(),
+		cloudsqlconn.WithDefaultDialOptions(cloudsqlconn.WithPrivateIP()),
+		cloudsqlconn.WithIAMAuthN(),
 	)
 	if err != nil {
 		log.Fatalf("uncaught error occured: %s", err)
 	}
 	defer cleanup()
-  fmt.Println("Connection: ", connection)
 	connectString := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable", connection, user, name)
 
 	return sql.Open(

@@ -35,12 +35,6 @@ variable "vm_image" {
   type = string
 }
 
-variable "vm_image_project" {
-  description = "The image project"
-  default = ""
-  type = string
-}
-
 variable "network_name" {
   type = string
   default = "default"
@@ -71,28 +65,34 @@ variable "load_balancer_port" {
   description = "Port for load balancer to connect to the VM instances"
 }
 
-variable "metadata" {
-  type = map(string)
-  default = {}
-  description = "Metadata."
+variable "health_check_name" {
+  type = string
+  default = ""
+  description = "Health check name for the GCE VMs Managed Instance Group"
+}
+
+variable "health_check_port" {
+  type = number
+  default = 80
+  description = "Port where the health check request is sent"
+}
+
+variable "health_check_request_path" {
+  type = string
+  default = "/"
+  description = "Path where the health check request is sent"
+}
+
+variable "vm_image_project" {
+  description = "The project where image exists."
+  default = ""
+  type = string
 }
 
 variable "dependencies" {
   type = list(any)
   default = []
-  description = "Dependencies of cloud run service"
-}
-
-variable "annotations" {
-  type = map(string)
-  default = {}
-  description = "Annotations for cloud run service"
-}
-
-variable "vpc_access_connector_id" {
-  type = string
-  default = null
-  description = "VPC access connector ID used for accessing a VPC network"
+  description = "Dependencies of mig"
 }
 
 variable "public_access_firewall_rule_name" {

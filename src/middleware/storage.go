@@ -24,7 +24,6 @@ type Storage struct {
 
 // Init kicks off the database connector
 func (s *Storage) Init(user, password, host, name, conn, redisHost, redisPort string, cache bool) error {
-  fmt.Println("Connection: ", conn)
 	if err := s.sqlstorage.Init(user, password, host, name, conn); err != nil {
 		return err
 	}
