@@ -1,6 +1,6 @@
 #### About
 This repository holds three-tier-web-app solution terraform config.
-It uses composition units to formulate the solution. In this repository, we are using GCE managed-instance-group instead
+It uses composition units to formulate the solution. In this repository, we are using GCE managed-instance-group with load-balancers instead
 of cloud-run for service stack.
 
 #### Motivation
