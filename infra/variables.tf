@@ -90,39 +90,48 @@ variable "backend_load_balancer_name" {
 variable "backend_env_variable" {
   type = map(string)
   default = {}
+  description = "User provided environment variables for backend"
 }
 
 variable "frontend_env_variable" {
   type = map(string)
   default = {}
+  description = "User provided environment variables for frontend"
 }
 
 variable "backend_load_balancer_port" {
   type = number
   default = null
+  description = "Port on which backend load balancer will connect to backend service"
 }
 
 variable "frontend_load_balancer_port" {
   type = number
   default = null
+  description = "Port on which frontend load balancer will connect to frontend service"
 }
 
 variable "backend_health_check_name" {
   type = string
+  description = "Health check name for backend service"
 }
 
 variable "frontend_health_check_name" {
   type = string
+  description = "Health check name for frontend service"
 }
 
 variable "backend_health_check_request_path" {
   type = string
+  description = "Health check request path for backend service"
 }
 
 variable "backend_startup_script" {
   type = string
+  description = "Startup script for backend which will run after backend service is created. This is quivalent to entrypoint script in docker"
 }
 
 variable "frontend_startup_script" {
   type = string
+  description = "Startup script for frontend which will run after frontend service is created"
 }
