@@ -34,7 +34,7 @@ module "three-tier-app-backend" {
     managed_instance_group_name = var.three-tier-app-backend-mig_service_name
     vm_image = var.three-tier-app-backend-vm_image
     vm_image_project = var.project_id
-    env_variables = merge(var.backend_env_variable, module.three-tier-app-cache.env_variables, module.three-tier-app-database.env_variables)
+    env_variables = merge(module.three-tier-app-cache.env_variables, module.three-tier-app-database.env_variables)
     dependencies = [module.three-tier-app-database.module_dependency]
     network_name = module.three-tier-app-vpc-network.network_name
     public_access_firewall_rule_name = var.three-tier-app-backend-public-access-firewall-rule-name
@@ -45,12 +45,12 @@ module "three-tier-app-backend" {
 }
 
 module "three-tier-app-backend-lb" {
-    source = "github.com/q2w/terraform-google-solution-builder-external-application-load-balancer?ref=v1.0.0"
+    source = "github.com/q2w/terraform-google-solution-builder-external-application-load-balancer?ref=v1.0.1"
     project_id = var.project_id
     load_balancer_name = var.backend_load_balancer_name
     load_balancer_port_name = module.three-tier-app-backend.load_balancer_port_name
     managed_instance_group_urls = [module.three-tier-app-backend.managed_instance_group_url]
-    managed_instance_group_health_check_links = module.three-tier-app-backend.health_check_link != "" ? [ module.three-tier-app-backend.health_check_link] : []
+    managed_instance_group_health_check_links = [ module.three-tier-app-backend.health_check_link]
 }
 
 module "three-tier-app-frontend" {
@@ -60,7 +60,7 @@ module "three-tier-app-frontend" {
     managed_instance_group_name = var.three-tier-app-frontend-mig_service_name
     vm_image = var.three-tier-app-frontend-vm_image
     vm_image_project = var.project_id
-    env_variables = merge(var.frontend_env_variable, { "BACKEND_SERVICE_ENDPOINT": module.three-tier-app-backend-lb.load_balancer_ip })
+    env_variables = merge(module.three-tier-app-backend-lb.env_variables)
     public_access_firewall_rule_name = var.three-tier-app-frontend-public-access-firewall-rule-name
     load_balancer_port = var.frontend_load_balancer_port
     health_check_name = var.frontend_health_check_name
@@ -68,10 +68,10 @@ module "three-tier-app-frontend" {
 }
 
 module "three-tier-app-frontend-lb" {
-    source = "github.com/q2w/terraform-google-solution-builder-external-application-load-balancer?ref=v1.0.0"
+    source = "github.com/q2w/terraform-google-solution-builder-external-application-load-balancer?ref=v1.0.1"
     project_id = var.project_id
     load_balancer_name = var.frontend_load_balancer_name
     load_balancer_port_name = module.three-tier-app-frontend.load_balancer_port_name
     managed_instance_group_urls = [module.three-tier-app-frontend.managed_instance_group_url]
-    managed_instance_group_health_check_links = module.three-tier-app-frontend.health_check_link != "" ? [ module.three-tier-app-frontend.health_check_link] : []
+    managed_instance_group_health_check_links = [ module.three-tier-app-frontend.health_check_link]
 }
