@@ -28,12 +28,12 @@ module "three-tier-app-database" {
 }
 
 module "three-tier-app-backend" {
-    source = "github.com/q2w/terraform-google-solution-builder-vm?ref=v1.0.0"
+    source = "github.com/q2w/terraform-google-solution-builder-vm?ref=v1.0.2"
     project_id = var.project_id
     region = var.region
     managed_instance_group_name = var.three-tier-app-backend-mig_service_name
     vm_image = var.three-tier-app-backend-vm_image
-    vm_image_project = var.project_id
+    vm_image_project = var.three-tier-app-backend-vm_image_project
     env_variables = merge(module.three-tier-app-cache.env_variables, module.three-tier-app-database.env_variables)
     dependencies = [module.three-tier-app-database.module_dependency]
     network_name = module.three-tier-app-vpc-network.network_name
@@ -54,12 +54,12 @@ module "three-tier-app-backend-lb" {
 }
 
 module "three-tier-app-frontend" {
-    source = "github.com/q2w/terraform-google-solution-builder-vm?ref=v1.0.0"
+    source = "github.com/q2w/terraform-google-solution-builder-vm?ref=v1.0.2"
     project_id = var.project_id
     region = var.region
     managed_instance_group_name = var.three-tier-app-frontend-mig_service_name
     vm_image = var.three-tier-app-frontend-vm_image
-    vm_image_project = var.project_id
+    vm_image_project = var.three-tier-app-frontend-vm_image_project
     env_variables = merge(module.three-tier-app-backend-lb.env_variables)
     public_access_firewall_rule_name = var.three-tier-app-frontend-public-access-firewall-rule-name
     load_balancer_port = var.frontend_load_balancer_port

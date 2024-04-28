@@ -52,8 +52,15 @@ variable "three-tier-app-backend-mig_service_name" {
   description = "Backend service name"
 }
 
+variable "three-tier-app-backend-vm_image_project" {
+  type = string
+  default = "debian-cloud"
+  description = "VM image project for backend"
+}
+
 variable "three-tier-app-backend-vm_image" {
   type = string
+  default = "debian-12-bookworm-v20240415"
   description = "VM image for backend"
 }
 
@@ -62,8 +69,15 @@ variable "three-tier-app-frontend-mig_service_name" {
   description = "Frontend service name"
 }
 
+variable "three-tier-app-frontend-vm_image_project" {
+  type = string
+  default = "debian-cloud"
+  description = "VM image project for frontend"
+}
+
 variable "three-tier-app-frontend-vm_image" {
   type = string
+  default = "debian-12-bookworm-v20240415"
   description = "VM image for frontend"
 }
 
