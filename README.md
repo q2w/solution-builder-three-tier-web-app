@@ -23,56 +23,52 @@ Base three-tier-web-app using cloud-run is preset at https://github.com/ayushmja
 * Updating VM composition unit to have 
   * Firewall rules for allowing access 
   * Adding source_image_project 
+  * Adding service account for GCE VM MIG
   * Adding access-config for external IP address
 
 Update in VM composition unit can be seen here. https://github.com/ayushmjain/terraform-google-solution-builder-vm/pull/1/files
 
-* Creation of GCE VM image for frontend and backend services. We have updated
-cloudbuild.yml files for frontend and backend.
-
 * Preparing comparable startup-script for VM to start frontend and backend service.
+
+Frontend startup script:
+
+```
+frontend_startup_script = <<-EOF
+        apt-get update
+        apt-get install -y docker.io
+        gcloud auth configure-docker
+        docker pull gcr.io/abhiwa-test-30112023/three-tier-app-fe:1.0.2
+        docker run --env-file /tmp/docker-env.txt -d --network host --name backend-service gcr.io/abhiwa-test-30112023/three-tier-app-fe:1.0.2
+    EOF
+```
+
+Backend startup script:
+
+```
+backend_startup_script = <<-EOF
+        apt-get update
+        apt-get install -y docker.io
+        gcloud auth configure-docker
+        docker pull gcr.io/abhiwa-test-30112023/three-tier-app-be:1.0.2
+        iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+        docker run -e PORT="8080" --env-file /tmp/docker-env.txt -d --network host --name backend-service gcr.io/abhiwa-test-30112023/three-tier-app-be:1.0.2
+    EOF
+```
 
 * Using load balancer composition unit to distribute traffic between instances of managed instance group
 
-##### Assumption
-
-* To create VM image for frontend and backend, cloudbuild service account requires
-below permissions,
-```
-gcloud projects add-iam-policy-binding PROJECT_ID \
---member='serviceAccount:PROJECT_NUMBER@cloudbuild.gserviceaccount.com' \
-—role='roles/compute.instanceAdmin.v1'
---role='roles/compute.osLogin'
---role='roles/iam.serviceAccountUser'
-```
-
-##### Future exploration
-* Explore using docker image of frontend and backend inside VM instance. 
-This would simplify application update. In this repo, we are creating a new VM image for update.
-
-
 #### How to run this solution
 
-1. Create VM image for frontend and backend. 
-   
-   a. Firstly give cloud build service account permission using below command.
+1. Create docker images for frontend and backend. 
 
-    ```
-    gcloud projects add-iam-policy-binding PROJECT_ID \
-    --member='serviceAccount:PROJECT_NUMBER@cloudbuild.gserviceaccount.com' \
-    —role='roles/compute.instanceAdmin.v1'
-    --role='roles/compute.osLogin'
-    --role='roles/iam.serviceAccountUser'
-   
-    ```
+    a. Run `gcloud builds submit --config=./cloudbuild.yaml` in ./src directory.
 
-    b. Run `gcloud builds submit --config=./cloudbuild.yaml` in ./src/frontend and 
-./src/middleware directory.
-
-    c. The above command will create VM image named `three-tier-app-fe` and 
+    b. The above command will create docker images named `three-tier-app-fe` and 
 `three-tier-app-be`
 
 2. Run `terraform apply` command for deployment and use the newly created images.
+You can use above given startup_script for frontend and backend. You can modify
+the startup script accordingly with the image tag etc. 
 3. You will get an IP address as output. You can open http://IP-address. It
 will open TODO page.
 
