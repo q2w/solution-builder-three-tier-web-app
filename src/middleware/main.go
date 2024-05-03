@@ -39,7 +39,7 @@ var (
 
 func main() {
 	conn := os.Getenv("CLOUD_SQL_DATABASE_CONNECTION_NAME")
-	user := os.Getenv("CLOUD_RUN_SERVICE_ACCOUNT")
+	user := os.Getenv("SERVICE_ACCOUNT")
 	host := os.Getenv("CLOUD_SQL_DATABASE_HOST")
 	name := os.Getenv("CLOUD_SQL_DATABASE_NAME")
 	pass := os.Getenv("db_pass")

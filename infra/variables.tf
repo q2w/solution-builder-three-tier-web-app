@@ -8,11 +8,6 @@ variable "region" {
   description = "GCP Region"
 }
 
-variable "three-tier-app-vpc-network-network_name" {
-  type = string
-  description = "VPC network name"
-}
-
 variable "three-tier-app-cache-redis_instance_name" {
   type = string
   description = "Redis instance name"
@@ -67,8 +62,47 @@ variable "three-tier-app-frontend-cloud_run_service_image" {
   description = "Cloud Run service container image"
 }
 
-variable "three-tier-app-frontend-vpc_access_connector_id" {
+variable "backend-service_account_name" {
   type = string
-  default = null
-  description = "VPC access connector ID used for accessing a VPC network"
+  default = "backend-service-account"
+  description = "Service account name for backend."
+}
+
+variable "cache-connect_mode" {
+  type = string
+  default = "DIRECT_PEERING"
+}
+
+variable "cache-tier" {
+  type = string
+  default = "BASIC"
+}
+
+variable "cache-transit_encryption_mode" {
+  type = string
+  default = "DISABLED"
+}
+
+variable "database-flags" {
+  type = list(object({name: string, value: string}))
+  default =   [ { name: "cloudsql.iam_authentication", value: "on" }]
+}
+
+variable "backend-template_annotations" {
+  type = map(string)
+  default = {
+    "autoscaling.knative.dev/maxScale"        = "8"
+    "run.googleapis.com/client-name"          = "terraform"
+    "run.googleapis.com/network-interfaces"  = "[{ network: \"default\", subnetwork: \"default\" }]"
+  }
+}
+
+variable "cloud_run_users" {
+  type = list(string)
+  default = ["allUsers"]
+}
+
+variable "cloud_run_port" {
+  type = object({name: string, port: number})
+  default = { name: "http1", port: 80}
 }
