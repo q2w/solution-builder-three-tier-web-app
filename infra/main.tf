@@ -21,7 +21,7 @@ module "three-tier-app-vpc-access-connector" {
             subnet_name = var.three-tier-app-vpc-access-connector-subnet_name
         }
     ]
-    depends_on = [module.three-tier-app-vpc]
+    depends_on = [ module.three-tier-app-vpc ]
 }
 
 module "three-tier-app-vpc-global-address" {
@@ -32,7 +32,7 @@ module "three-tier-app-vpc-global-address" {
     purpose = var.three-tier-app-vpc-global-address-purpose
     subnetwork = var.three-tier-app-vpc-network_name
     names = var.three-tier-app-vpc-global-address-names
-    depends_on = [module.three-tier-app-vpc]
+    depends_on = [ module.three-tier-app-vpc ]
 }
 
 module "three-tier-app-vpc-service-networking" {
@@ -62,11 +62,11 @@ module "three-tier-app-cache" {
     tier = var.three-tier-app-cache-tier
     transit_encryption_mode = var.three-tier-app-cache-transit_encryption_mode
     authorized_network = module.three-tier-app-vpc.network_name
-    depends_on = [module.three-tier-app-vpc]
+    depends_on = [ module.three-tier-app-vpc ]
 }
 
 module "three-tier-app-database" {
-    source = "github.com/terraform-google-modules/terraform-google-sql-db//modules/postgresql?ref=v20.0.0"
+    source = "github.com/terraform-google-modules/terraform-google-sql-db//modules/postgresql?ref=v17.0.1"
     project_id = var.project_id
     region = var.region
     db_name = var.three-tier-app-database-db_name
@@ -79,7 +79,8 @@ module "three-tier-app-database" {
     deletion_protection = var.three-tier-app-database-deletion_protection
     user_deletion_policy = var.three-tier-app-database-user_deletion_policy
     database_deletion_policy = var.three-tier-app-database-database_deletion_policy
-    depends_on = [module.three-tier-app-vpc-service-networking, module.three-tier-app-sa, module.three-tier-app-vpc ]
+    enable_default_user = var.three-tier-app-database-enable_default_user
+    depends_on = [ module.three-tier-app-vpc, module.three-tier-app-vpc-service-networking, module.three-tier-app-sa.email ]
 }
 
 module "three-tier-app-backend" {

@@ -167,6 +167,11 @@ variable "three-tier-app-database-database_deletion_policy" {
   default = "ABANDON"
 }
 
+variable "three-tier-app-database-enable_default_user" {
+  type = bool
+  default = false
+}
+
 variable "three-tier-app-vpc-access-connector-region" {
   type = string
   default = "us-central1"
