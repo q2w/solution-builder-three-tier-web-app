@@ -12,15 +12,7 @@ module "three-tier-app-vpc" {
 module "three-tier-app-vpc-access-connector" {
     source = "github.com/terraform-google-modules/terraform-google-network//modules/vpc-serverless-connector-beta?ref=v9.1.0"
     project_id = var.project_id
-    vpc_connectors = [
-        {   name: var.three-tier-app-vpc-access-connector-name,
-            region: var.three-tier-app-vpc-access-connector-region,
-            ip_cidr_range: var.three-tier-app-vpc-access-connector-ip_cidr_range,
-            network: var.three-tier-app-vpc-network_name,
-            max_throughput: var.three-tier-app-vpc-access-connector-max_throughput,
-            subnet_name = var.three-tier-app-vpc-access-connector-subnet_name
-        }
-    ]
+    vpc_connectors = var.three-tier-app-vpc-access-connector-vpc_connectors
     depends_on = [ module.three-tier-app-vpc ]
 }
 
@@ -45,10 +37,7 @@ module "three-tier-app-sa" {
     source = "github.com/terraform-google-modules/terraform-google-service-accounts?ref=v4.2.3"
     project_id = var.project_id
     names = var.three-tier-app-sa-names
-    project_roles = [
-        "${data.google_project.project.number}=>roles/cloudsql.instanceUser",
-        "${data.google_project.project.number}=>roles/cloudsql.client"
-    ]
+    project_roles = var.three-tier-app-sa-project_roles
 }
 
 module "three-tier-app-cache" {

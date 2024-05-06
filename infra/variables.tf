@@ -20,7 +20,6 @@ variable "three-tier-app-cache-name" {
 
 variable "three-tier-app-cache-redis_version" {
   type = string
-  default = "REDIS_6_X"
   description = "The version of Redis software"
 }
 
@@ -42,7 +41,6 @@ variable "three-tier-app-database-name" {
 
 variable "three-tier-app-database-database_version" {
   type = string
-  default = "POSTGRES_14"
   description = "Database version"
 }
 
@@ -80,28 +78,27 @@ variable "three-tier-app-vpc-access-connector-name" {
 
 variable "three-tier-app-sa-names" {
   type = list(string)
-  default = [ "backend-service-account" ]
   description = "Service account names to be created."
 }
 
 variable "three-tier-app-cache-connect_mode" {
   type = string
-  default = "DIRECT_PEERING"
+  default = null
 }
 
 variable "three-tier-app-cache-tier" {
   type = string
-  default = "BASIC"
+  default = "STANDARD_HA"
 }
 
 variable "three-tier-app-cache-transit_encryption_mode" {
   type = string
-  default = "DISABLED"
+  default = "SERVER_AUTHENTICATION"
 }
 
 variable "three-tier-app-database-database_flags" {
   type = list(object({name: string, value: string}))
-  default =   [ { name: "cloudsql.iam_authentication", value: "on" }]
+  default =  []
 }
 
 variable "three-tier-app-backend-template_annotations" {
@@ -114,22 +111,22 @@ variable "three-tier-app-backend-template_annotations" {
 
 variable "three-tier-app-backend-members" {
   type = list(string)
-  default = ["allUsers"]
+  default = []
 }
 
 variable "three-tier-app-frontend-members" {
   type = list(string)
-  default = ["allUsers"]
+  default = []
 }
 
 variable "three-tier-app-backend-ports" {
   type = object({name: string, port: number})
-  default = { name: "http1", port: 80}
+  default = { name: "http1", port: 8080}
 }
 
 variable "three-tier-app-frontend-ports" {
   type = object({name: string, port: number})
-  default = { name: "http1", port: 80}
+  default = { name: "http1", port: 8080}
 }
 
 variable "three-tier-app-vpc-auto_create_subnetworks" {
@@ -139,55 +136,45 @@ variable "three-tier-app-vpc-auto_create_subnetworks" {
 
 variable "three-tier-app-vpc-global-address-global" {
   type = bool
-  default = true
+  default = false
 }
 
 variable "three-tier-app-vpc-global-address-purpose" {
   type = string
-  default = "VPC_PEERING"
+  default = "GCE_ENDPOINT"
 }
 
 variable "three-tier-app-vpc-global-address-names" {
   type = list(string)
-  default = [ "vpc-global-address-1" ]
+  default = []
 }
 
 variable "three-tier-app-database-deletion_protection" {
   type = bool
-  default = false
+  default = true
 }
 
 variable "three-tier-app-database-user_deletion_policy" {
   type = string
-  default = "ABANDON"
+  default = null
 }
 
 variable "three-tier-app-database-database_deletion_policy" {
   type = string
-  default = "ABANDON"
+  default = null
 }
 
 variable "three-tier-app-database-enable_default_user" {
   type = bool
-  default = false
+  default = true
 }
 
-variable "three-tier-app-vpc-access-connector-region" {
-  type = string
-  default = "us-central1"
+variable "three-tier-app-vpc-access-connector-vpc_connectors" {
+  type = list(map(string))
+  default = []
 }
 
-variable "three-tier-app-vpc-access-connector-ip_cidr_range" {
-  type = string
-  default = "10.8.0.0/28"
-}
-
-variable "three-tier-app-vpc-access-connector-max_throughput" {
-  type = number
-  default = 300
-}
-
-variable "three-tier-app-vpc-access-connector-subnet_name" {
-  type = string
-  default = null
+variable "three-tier-app-sa-project_roles" {
+  type = list(string)
+  default = []
 }
