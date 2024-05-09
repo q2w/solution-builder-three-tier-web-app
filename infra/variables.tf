@@ -101,14 +101,6 @@ variable "three-tier-app-database-database_flags" {
   default =  []
 }
 
-variable "three-tier-app-backend-template_annotations" {
-  type = map(string)
-  default = {
-    "autoscaling.knative.dev/maxScale"        = "8"
-    "run.googleapis.com/client-name"          = "terraform"
-  }
-}
-
 variable "three-tier-app-backend-members" {
   type = list(string)
   default = []
@@ -117,16 +109,6 @@ variable "three-tier-app-backend-members" {
 variable "three-tier-app-frontend-members" {
   type = list(string)
   default = []
-}
-
-variable "three-tier-app-backend-ports" {
-  type = object({name: string, port: number})
-  default = { name: "http1", port: 8080}
-}
-
-variable "three-tier-app-frontend-ports" {
-  type = object({name: string, port: number})
-  default = { name: "http1", port: 8080}
 }
 
 variable "three-tier-app-vpc-auto_create_subnetworks" {
@@ -177,4 +159,22 @@ variable "three-tier-app-vpc-access-connector-vpc_connectors" {
 variable "three-tier-app-sa-project_roles" {
   type = list(string)
   default = []
+}
+
+variable "three-tier-app-backend-max_instance_count" {
+  type = number
+}
+
+variable "three-tier-app-backend-vpc_access_egress" {
+  type = string
+}
+
+variable "three-tier-app-backend-port" {
+  type = number
+  default = 80
+}
+
+variable "three-tier-app-frontend-port" {
+  type = number
+  default = 80
 }

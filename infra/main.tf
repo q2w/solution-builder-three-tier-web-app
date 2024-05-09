@@ -73,11 +73,12 @@ module "three-tier-app-database" {
 }
 
 module "three-tier-app-backend" {
-    source = "github.com/GoogleCloudPlatform/terraform-google-cloud-run?ref=v0.10.0"
+    source = "./modules/cloud-run-service-v2"
     project_id = var.project_id
     location = var.region
     service_name = var.three-tier-app-backend-service_name
     image = var.three-tier-app-backend-image
+    port = var.three-tier-app-backend-port
     env_vars = [
         { name: "REDIS_HOST", value : module.three-tier-app-cache.host },
         { name: "REDIS_PORT", value : module.three-tier-app-cache.port },
@@ -88,23 +89,20 @@ module "three-tier-app-backend" {
         { name: "CLOUD_SQL_DATABASE_NAME", value: var.three-tier-app-database-db_name },
         { name: "SERVICE_ACCOUNT", value : module.three-tier-app-sa.email }
     ]
-    template_annotations = merge({
-        "run.googleapis.com/cloudsql-instances" = module.three-tier-app-database.instance_connection_name
-        "run.googleapis.com/vpc-access-egress"    = "all"
-        "run.googleapis.com/vpc-access-connector" = var.three-tier-app-vpc-access-connector-name
-    }, var.three-tier-app-backend-template_annotations)
     service_account_email = module.three-tier-app-sa.email
-    ports = var.three-tier-app-backend-ports
+    vpc_access_connector_ids = module.three-tier-app-vpc-access-connector.connector_ids
+    vpc_access_egress = var.three-tier-app-backend-vpc_access_egress
+    max_instance_count = var.three-tier-app-backend-max_instance_count
     members = var.three-tier-app-backend-members
 }
 
 module "three-tier-app-frontend" {
-    source = "github.com/GoogleCloudPlatform/terraform-google-cloud-run?ref=v0.10.0"
+    source = "./modules/cloud-run-service-v2"
     project_id = var.project_id
     location = var.region
     service_name = var.three-tier-app-frontend-service_name
     image = var.three-tier-app-frontend-image
+    port = var.three-tier-app-frontend-port
     env_vars = [{ name: "LOAD_BALANCER_IP_ADDRESS", value : module.three-tier-app-backend.service_url}]
-    ports = var.three-tier-app-frontend-ports
     members = var.three-tier-app-frontend-members
 }
