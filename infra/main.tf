@@ -34,10 +34,10 @@ module "three-tier-app-vpc-service-networking" {
 }
 
 module "three-tier-app-sa" {
-    source = "github.com/terraform-google-modules/terraform-google-service-accounts?ref=v4.2.3"
+    source = "github.com/terraform-google-modules/terraform-google-service-accounts//modules/simple-sa?ref=simple-sa"
     project_id = var.project_id
-    names = var.three-tier-app-sa-names
     project_roles = var.three-tier-app-sa-project_roles
+    name = var.three-tier-app-sa-names[0]
 }
 
 module "three-tier-app-cache" {
@@ -82,7 +82,7 @@ module "three-tier-app-backend" {
     env_vars = [
         { name: "REDIS_HOST", value : module.three-tier-app-cache.host },
         { name: "REDIS_PORT", value : module.three-tier-app-cache.port },
-        { name: "CLOUD_SQL_DATABASE_HOST", value : module.three-tier-app-database.instance_first_ip_address } ,
+        { name: "CLOUD_SQL_DATABASE_HOST", value : "127.0.0.1" } ,
         {
             name: "CLOUD_SQL_DATABASE_CONNECTION_NAME", value: module.three-tier-app-database.instance_connection_name
         },
@@ -94,6 +94,7 @@ module "three-tier-app-backend" {
     vpc_access_egress = var.three-tier-app-backend-vpc_access_egress
     max_instance_count = var.three-tier-app-backend-max_instance_count
     members = var.three-tier-app-backend-members
+    instance_connection_name = module.three-tier-app-database.instance_connection_name
 }
 
 module "three-tier-app-frontend" {

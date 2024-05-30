@@ -20,6 +20,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/cloudsqlconn"
 	"cloud.google.com/go/cloudsqlconn/postgres/pgxv4"
@@ -37,16 +38,23 @@ func (s *SQLStorage) log(msg string) {
 // Init kicks off the database connector
 func (s *SQLStorage) Init(user, password, host, name, conn string) error {
 	var err error
-	instanceConnectionName := conn
+  // 	instanceConnectionName := conn
 
+  // Sleep for 30 seconds
+  time.Sleep(30 * time.Second)
+
+  fmt.Println("Done sleeping!")
 	s.log("Opening connection")
 
 	if password == "" {
 		s.log("method is service account")
 		trimmedUser := strings.ReplaceAll(user, ".gserviceaccount.com", "")
-		if s.db, err = connectWithConnector(trimmedUser, password, name, instanceConnectionName); err != nil {
-			return fmt.Errorf("could not open connection using Service Account: %s", err)
-		}
+    if s.db, err = connectDirect(trimmedUser, password, name, host); err != nil {
+      return fmt.Errorf("could not open connection using Service Account: %s", err)
+    }
+  // 		if s.db, err = connectWithConnector(trimmedUser, password, name, instanceConnectionName); err != nil {
+  // 			return fmt.Errorf("could not open connection using Service Account: %s", err)
+  // 		}
 	} else {
 		s.log("method is database user")
 		if s.db, err = connectDirect(user, password, name, host); err != nil {

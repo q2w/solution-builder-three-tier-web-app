@@ -86,3 +86,8 @@ variable "vpc_access_egress" {
   type = string
   default = "ALL_TRAFFIC"
 }
+
+variable "instance_connection_name" {
+  type = string
+  default = ""
+}

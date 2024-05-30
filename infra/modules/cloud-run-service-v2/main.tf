@@ -22,6 +22,17 @@ resource "google_cloud_run_v2_service" "main" {
     }
 
     containers {
+      # Cloud SQL Proxy Sidecar Container
+      image = "gcr.io/cloudsql-docker/gce-proxy:latest"
+      command = [
+        "/cloud_sql_proxy",
+        "-instances=${var.instance_connection_name}=tcp:5432",
+        "-enable_iam_login",
+      ]
+    }
+
+
+    containers {
       image = var.image
       ports {
         container_port = var.port
