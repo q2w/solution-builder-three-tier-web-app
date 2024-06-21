@@ -9,7 +9,6 @@ module "three_tier_app_vpc_access_connector" {
     source = "github.com/q2w/terraform-google-network//modules/vpc-serverless-connector-beta"
     project_id = var.project_id
     vpc_connectors = [ merge(var.three_tier_app_vpc_access_connector_vpc_connectors[0], { "network": module.three_tier_app_vpc.network_name}) ]
-    depends_on = [ module.three_tier_app_vpc ] // how will this be populated
 }
 
 module "three_tier_app_global_address" {
@@ -20,7 +19,7 @@ module "three_tier_app_global_address" {
     purpose = var.three_tier_app_global_address_purpose
     subnetwork = var.three_tier_app_global_address_subnetwork
     names = var.three_tier_app_global_address_names
-    depends_on = [ module.three_tier_app_vpc ] // ?
+    depends_on = [ module.three_tier_app_vpc ] # Explicit dependency is added when the connection doesn't impact any input variable
 }
 
 module "three_tier_app_vpc_service_networking" {
@@ -47,7 +46,6 @@ module "three_tier_app_cache" {
     tier = var.three_tier_app_cache_tier
     transit_encryption_mode = var.three_tier_app_cache_transit_encryption_mode
     authorized_network = module.three_tier_app_vpc.network_name
-    depends_on = [ module.three_tier_app_vpc ] // ?
 }
 
 module "three_tier_app_database" {
@@ -65,13 +63,13 @@ module "three_tier_app_database" {
     user_deletion_policy = var.three_tier_app_database_user_deletion_policy
     database_deletion_policy = var.three_tier_app_database_database_deletion_policy
     enable_default_user = var.three_tier_app_database_enable_default_user
-    depends_on = [ module.three_tier_app_vpc, module.three_tier_app_vpc_service_networking, module.three_tier_app_sa.email ] // ?
+    depends_on = [  module.three_tier_app_vpc_service_networking ] # Explicit dependency is added when the connection doesn't impact any input variable
 }
 
 module "three_tier_app_backend" {
     source = "github.com/q2w/terraform-google-cloud-run//modules/v2"
     project_id = var.project_id
-    location = var.region // why location and not region
+    location = var.region # why location and not region
     service_name = var.three_tier_app_backend_service_name
     service_account = module.three_tier_app_sa.email
     members = var.three_tier_app_backend_members
