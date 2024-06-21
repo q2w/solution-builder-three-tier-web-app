@@ -107,14 +107,15 @@ variable "three_tier_app_database_database_version" {
   description = "Database version"
 }
 
+variable "three_tier_app_database_database_flags" {
+  type = list(object({name: string, value: string}))
+  default =  []
+}
+
 variable "three_tier_app_database_disk_size" {
   type = number
   default = 10
   description = "The size of data disk in GB"
-}
-
-variable "three_tier_app_database_iam_users" {
-  type = list(object({ id : string}))
 }
 
 variable "three_tier_app_database_ip_configuration" {
@@ -141,11 +142,6 @@ variable "three_tier_app_database_enable_default_user" {
   default = true
 }
 
-variable "three_tier_app_database_database_flags" {
-  type = list(object({name: string, value: string}))
-  default =  []
-}
-
 # Variables for module three_tier_app_backend
 variable "three_tier_app_backend_service_name" {
   type = string
@@ -163,7 +159,7 @@ variable "three_tier_app_backend_template_scaling" {
 
 
 variable "three_tier_app_backend_containers" {
-  type = list(object({}))
+  type = list(object({ container_image: string, ports: object({ container_port: number})}))
 }
 
 variable "three_tier_app_backend_vpc_access" {
@@ -182,5 +178,5 @@ variable "three_tier_app_frontend_members" {
 }
 
 variable "three_tier_app_frontend_containers" {
-  type = list(object({}))
+  type = list(object({ container_image: string, ports: object({ container_port: number})}))
 }

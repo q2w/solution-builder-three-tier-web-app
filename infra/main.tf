@@ -8,7 +8,7 @@ module "three_tier_app_vpc" {
 module "three_tier_app_vpc_access_connector" {
     source = "github.com/terraform-google-modules/terraform-google-network//modules/vpc-serverless-connector-beta?ref=v9.1.0"
     project_id = var.project_id
-    vpc_connectors = var.three_tier_app_vpc_access_connector_vpc_connectors
+    vpc_connectors = [ merge(var.three_tier_app_vpc_access_connector_vpc_connectors[0], { "network": module.three_tier_app_vpc.network_name}) ]
     depends_on = [ module.three_tier_app_vpc ] // how will this be populated
 }
 
@@ -83,7 +83,7 @@ module "three_tier_app_backend" {
                 module.three_tier_app_sa.env_vars)
         }
     ]
-    vpc_access = { connector: module.three_tier_app_vpc_access_connector.connector_ids[0], egress: var.three_tier_app_backend_vpc_access.egress }
+    vpc_access = { connector: one(module.three_tier_app_vpc_access_connector.connector_ids), egress: var.three_tier_app_backend_vpc_access.egress }
     template_scaling = var.three_tier_app_backend_template_scaling
 }
 
