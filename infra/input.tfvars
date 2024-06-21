@@ -45,7 +45,7 @@ three_tier_app_backend_members = [ "allUsers" ]
 three_tier_app_backend_template_scaling = { max_instance_count: 4}
 three_tier_app_backend_containers = [
   {
-    container_image: "gcr.io/abhiwa-test-30112023/three-tier-app-be:1.0.8"
+    container_image: "gcr.io/abhiwa-test-30112023/three-tier-app-be:1.2.1"
     ports: { container_port: 80 }
   }
 ]
@@ -55,7 +55,7 @@ three_tier_app_frontend_service_name = "frontend-service"
 three_tier_app_frontend_members = [ "allUsers" ]
 three_tier_app_frontend_containers = [
   {
-    container_image: "gcr.io/abhiwa-test-30112023/three-tier-app-fe:1.0.2"
+    container_image: "gcr.io/abhiwa-test-30112023/three-tier-app-fe:1.2.1"
     ports: { container_port: 80 }
   }
 ]

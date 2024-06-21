@@ -6,7 +6,7 @@ module "three_tier_app_vpc" {
 }
 
 module "three_tier_app_vpc_access_connector" {
-    source = "github.com/terraform-google-modules/terraform-google-network//modules/vpc-serverless-connector-beta?ref=v9.1.0"
+    source = "github.com/q2w/terraform-google-network//modules/vpc-serverless-connector-beta"
     project_id = var.project_id
     vpc_connectors = [ merge(var.three_tier_app_vpc_access_connector_vpc_connectors[0], { "network": module.three_tier_app_vpc.network_name}) ]
     depends_on = [ module.three_tier_app_vpc ] // how will this be populated
