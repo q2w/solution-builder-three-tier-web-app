@@ -1,108 +1,102 @@
-data "google_project" "project" {
-    project_id = var.project_id
-}
-
-module "three-tier-app-vpc" {
+module "three_tier_app_vpc" {
     source = "github.com/terraform-google-modules/terraform-google-network//modules/vpc?ref=v9.1.0"
     project_id = var.project_id
-    network_name = var.three-tier-app-vpc-network_name
-    auto_create_subnetworks = var.three-tier-app-vpc-auto_create_subnetworks
+    network_name = var.three_tier_app_vpc_network_name
+    auto_create_subnetworks = var.three_tier_app_vpc_auto_create_subnetworks
 }
 
-module "three-tier-app-vpc-access-connector" {
+module "three_tier_app_vpc_access_connector" {
     source = "github.com/terraform-google-modules/terraform-google-network//modules/vpc-serverless-connector-beta?ref=v9.1.0"
     project_id = var.project_id
-    vpc_connectors = var.three-tier-app-vpc-access-connector-vpc_connectors
-    depends_on = [ module.three-tier-app-vpc ]
+    vpc_connectors = var.three_tier_app_vpc_access_connector_vpc_connectors
+    depends_on = [ module.three_tier_app_vpc ] // how will this be populated
 }
 
-module "three-tier-app-vpc-global-address" {
+module "three_tier_app_global_address" {
     source = "github.com/terraform-google-modules/terraform-google-address?ref=v3.2.0"
     project_id = var.project_id
     region = var.region
-    global = var.three-tier-app-vpc-global-address-global
-    purpose = var.three-tier-app-vpc-global-address-purpose
-    subnetwork = var.three-tier-app-vpc-network_name
-    names = var.three-tier-app-vpc-global-address-names
-    depends_on = [ module.three-tier-app-vpc ]
+    global = var.three_tier_app_global_address_global
+    purpose = var.three_tier_app_global_address_purpose
+    subnetwork = var.three_tier_app_global_address_subnetwork
+    names = var.three_tier_app_global_address_names
+    depends_on = [ module.three_tier_app_vpc ] // ?
 }
 
-module "three-tier-app-vpc-service-networking" {
+module "three_tier_app_vpc_service_networking" {
     source = "./modules/service-networking"
-    global_address_names = module.three-tier-app-vpc-global-address.names
-    network_name = module.three-tier-app-vpc.network_self_link
+    global_address_names = module.three_tier_app_global_address.names
+    network_name = module.three_tier_app_vpc.network_self_link
 }
 
-module "three-tier-app-sa" {
-    source = "github.com/terraform-google-modules/terraform-google-service-accounts?ref=v4.2.3"
+module "three_tier_app_sa" {
+    source = "github.com/q2w/terraform-google-service-accounts//modules/simple-sa"
     project_id = var.project_id
-    names = var.three-tier-app-sa-names
-    project_roles = var.three-tier-app-sa-project_roles
+    name = var.three_tier_app_sa_name
+    project_roles = var.three_tier_app_sa_project_roles
 }
 
-module "three-tier-app-cache" {
-    source = "github.com/terraform-google-modules/terraform-google-memorystore?ref=v8.0.0"
+module "three_tier_app_cache" {
+    source = "github.com/q2w/terraform-google-memorystore"
     project = var.project_id
     region = var.region
-    name = var.three-tier-app-cache-name
-    memory_size_gb = var.three-tier-app-cache-memory_size_gb
-    redis_version = var.three-tier-app-cache-redis_version
-    connect_mode = var.three-tier-app-cache-connect_mode
-    tier = var.three-tier-app-cache-tier
-    transit_encryption_mode = var.three-tier-app-cache-transit_encryption_mode
-    authorized_network = module.three-tier-app-vpc.network_name
-    depends_on = [ module.three-tier-app-vpc ]
+    name = var.three_tier_app_cache_name
+    memory_size_gb = var.three_tier_app_cache_memory_size_gb
+    redis_version = var.three_tier_app_cache_redis_version
+    connect_mode = var.three_tier_app_cache_connect_mode
+    tier = var.three_tier_app_cache_tier
+    transit_encryption_mode = var.three_tier_app_cache_transit_encryption_mode
+    authorized_network = module.three_tier_app_vpc.network_name
+    depends_on = [ module.three_tier_app_vpc ] // ?
 }
 
-module "three-tier-app-database" {
-    source = "github.com/terraform-google-modules/terraform-google-sql-db//modules/postgresql?ref=v17.0.1"
+module "three_tier_app_database" {
+    source = "github.com/q2w/terraform-google-sql-db//modules/postgresql"
     project_id = var.project_id
     region = var.region
-    db_name = var.three-tier-app-database-db_name
-    name = var.three-tier-app-database-name
-    iam_users = [{ id: var.three-tier-app-sa-names[0], email: module.three-tier-app-sa.email }]
-    database_version = var.three-tier-app-database-database_version
-    disk_size = var.three-tier-app-database-disk_size
-    database_flags = var.three-tier-app-database-database_flags
-    ip_configuration = { ipv4_enabled: false, private_network: "projects/${var.project_id}/global/networks/${module.three-tier-app-vpc.network_name}"}
-    deletion_protection = var.three-tier-app-database-deletion_protection
-    user_deletion_policy = var.three-tier-app-database-user_deletion_policy
-    database_deletion_policy = var.three-tier-app-database-database_deletion_policy
-    enable_default_user = var.three-tier-app-database-enable_default_user
-    depends_on = [ module.three-tier-app-vpc, module.three-tier-app-vpc-service-networking, module.three-tier-app-sa.email ]
+    db_name = var.three_tier_app_database_db_name
+    name = var.three_tier_app_database_name
+    iam_users = [ module.three_tier_app_sa.id ]
+    database_version = var.three_tier_app_database_database_version
+    disk_size = var.three_tier_app_database_disk_size
+    database_flags = var.three_tier_app_database_database_flags
+    ip_configuration = { ipv4_enabled: var.three_tier_app_database_ip_configuration.ipv4_enabled, private_network: module.three_tier_app_vpc.network_id }
+    deletion_protection = var.three_tier_app_database_deletion_protection
+    user_deletion_policy = var.three_tier_app_database_user_deletion_policy
+    database_deletion_policy = var.three_tier_app_database_database_deletion_policy
+    enable_default_user = var.three_tier_app_database_enable_default_user
+    depends_on = [ module.three_tier_app_vpc, module.three_tier_app_vpc_service_networking, module.three_tier_app_sa.email ] // ?
 }
 
-module "three-tier-app-backend" {
-    source = "./modules/cloud-run-service-v2"
+module "three_tier_app_backend" {
+    source = "github.com/q2w/terraform-google-cloud-run//modules/v2"
     project_id = var.project_id
-    location = var.region
-    service_name = var.three-tier-app-backend-service_name
-    image = var.three-tier-app-backend-image
-    port = var.three-tier-app-backend-port
-    env_vars = [
-        { name: "REDIS_HOST", value : module.three-tier-app-cache.host },
-        { name: "REDIS_PORT", value : module.three-tier-app-cache.port },
-        { name: "CLOUD_SQL_DATABASE_HOST", value : module.three-tier-app-database.instance_first_ip_address } ,
-        {
-            name: "CLOUD_SQL_DATABASE_CONNECTION_NAME", value: module.three-tier-app-database.instance_connection_name
-        },
-        { name: "CLOUD_SQL_DATABASE_NAME", value: var.three-tier-app-database-db_name },
-        { name: "SERVICE_ACCOUNT", value : module.three-tier-app-sa.email }
+    location = var.region // why location and not region
+    service_name = var.three_tier_app_backend_service_name
+    service_account = module.three_tier_app_sa.email
+    members = var.three_tier_app_backend_members
+    containers = [
+        {   container_image: var.three_tier_app_backend_containers[0].container_image,
+            ports: var.three_tier_app_backend_containers[0].ports,
+            env_vars: merge(module.three_tier_app_cache.env_vars,
+                module.three_tier_app_database.env_vars,
+                module.three_tier_app_sa.env_vars)
+        }
     ]
-    service_account_email = module.three-tier-app-sa.email
-    vpc_access_connector_ids = module.three-tier-app-vpc-access-connector.connector_ids
-    vpc_access_egress = var.three-tier-app-backend-vpc_access_egress
-    max_instance_count = var.three-tier-app-backend-max_instance_count
-    members = var.three-tier-app-backend-members
+    vpc_access = { connector: module.three_tier_app_vpc_access_connector.connector_ids[0], egress: var.three_tier_app_backend_vpc_access.egress }
+    template_scaling = var.three_tier_app_backend_template_scaling
 }
 
-module "three-tier-app-frontend" {
-    source = "./modules/cloud-run-service-v2"
+module "three_tier_app_frontend" {
+    source = "github.com/q2w/terraform-google-cloud-run//modules/v2"
     project_id = var.project_id
     location = var.region
-    service_name = var.three-tier-app-frontend-service_name
-    image = var.three-tier-app-frontend-image
-    port = var.three-tier-app-frontend-port
-    env_vars = [{ name: "LOAD_BALANCER_IP_ADDRESS", value : module.three-tier-app-backend.service_url}]
-    members = var.three-tier-app-frontend-members
+    service_name = var.three_tier_app_frontend_service_name
+    members = var.three_tier_app_frontend_members
+    containers = [
+        {   container_image: var.three_tier_app_frontend_containers[0].container_image,
+            ports: var.three_tier_app_frontend_containers[0].ports,
+            env_vars: { "BACKEND_SERVICE_ENDPOINT": module.three_tier_app_backend.service_uri }
+        }
+    ]
 }
