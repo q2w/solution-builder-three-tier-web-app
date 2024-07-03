@@ -100,3 +100,8 @@ module "three_tier_app_frontend" {
         }
     ]
 }
+
+module "three_tier_app_apphub" {
+    source = "modules/apphub"
+    services = concat(database_service_uri, )
+}
