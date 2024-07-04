@@ -1,5 +1,6 @@
 #Creating the application
 resource "google_apphub_application" "apphub_application" {
+  project = var.project_id
   location = var.app_location
   application_id = var.application_name
   display_name = "AppHub Application"
@@ -27,5 +28,4 @@ resource "google_apphub_application" "apphub_application" {
           email        =  var.owner_email
         }
   }
-  project = var.project_id
 }
