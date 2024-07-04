@@ -25,3 +25,7 @@ variable "owner_name"{
 variable "owner_email"{
     type = string
 }
+
+variable "project_id"{
+    type = string
+}

@@ -27,4 +27,5 @@ resource "google_apphub_application" "apphub_application" {
           email        =  var.owner_email
         }
   }
+  project = var.project_id
 }
