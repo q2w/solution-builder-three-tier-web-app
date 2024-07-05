@@ -29,3 +29,11 @@ variable "owner_email"{
 variable "project_id"{
     type = string
 }
+
+variable "uri_service"{
+    type = string
+}
+
+variable "uri_workload"{
+    type = string
+}
