@@ -1,3 +1,11 @@
+variable "project_id"{
+    type = string
+}
+
+variable "host_project_id" {
+    type = string
+}
+
 variable "location"{
     type = string
 }
@@ -32,10 +40,6 @@ variable "owner_name"{
 }
 
 variable "owner_email"{
-    type = string
-}
-
-variable "project_id"{
     type = string
 }
 

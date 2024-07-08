@@ -104,6 +104,7 @@ module "three_tier_app_frontend" {
 module "three_tier_app_apphub" {
     source = "./modules/apphub"
     project_id = var.project_id
+    host_project_id = var.project_id
     location = var.region
     application_id = var.three_tier_app_apphub_application_id
     display_name = var.three_tier_app_apphub_display_name

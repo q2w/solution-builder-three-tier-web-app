@@ -1,6 +1,6 @@
 #Creating the application
 resource "google_apphub_application" "apphub_application" {
-  project = var.project_id
+  project = var.host_project_id
   location = var.location
   application_id = var.application_id
   display_name = var.display_name
@@ -32,7 +32,7 @@ resource "google_apphub_application" "apphub_application" {
 
 #Attaching service project; assuming host project and service project are the same
 resource "google_apphub_service_project_attachment" "attach_service_project" {
- project = var.project_id
+ project = google_apphub_application.apphub_application.project
  service_project_attachment_id = var.project_id
 }
 
@@ -42,6 +42,7 @@ data "google_apphub_discovered_service" "services" {
 
   location    = var.location
   service_uri = each.key
+  depends_on = [google_apphub_service_project_attachment.attach_service_project]
 }
 
 # Register a service
@@ -60,6 +61,7 @@ data "google_apphub_discovered_workload" "workloads" {
 
   location    = var.location
   workload_uri = each.key
+  depends_on = [google_apphub_service_project_attachment.attach_service_project]
 }
 
 # Register a workload
