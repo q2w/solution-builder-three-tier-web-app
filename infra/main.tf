@@ -102,6 +102,17 @@ module "three_tier_app_frontend" {
 }
 
 module "three_tier_app_apphub" {
-    source = "modules/apphub"
-    services = concat(database_service_uri, )
+    source = "./modules/apphub"
+    project_id = var.project_id
+    location = var.region
+    application_id = var.three_tier_app_apphub_application_id
+    display_name = var.three_tier_app_apphub_display_name
+    criticality_type = var.three_tier_app_apphub_criticality_type
+    environment_type = var.three_tier_app_apphub_environment_type
+    owner_email = var.three_tier_app_apphub_owner_email
+    owner_name = var.three_tier_app_apphub_owner_name
+    scope_type = var.three_tier_app_apphub_scope_type
+    # This will be output from each service/workload.
+    service_uris = [ { service_uri: "//compute.googleapis.com/projects/abhiwa-test-30112023/regions/us-central1/forwardingRules/a565a73f8b70642bd87d58e9adb0fdb5",
+        service_id: "forwading-rules-service" } ]
 }

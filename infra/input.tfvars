@@ -60,5 +60,12 @@ three_tier_app_frontend_containers = [
   }
 ]
 
+three_tier_app_apphub_application_id = "apphub-abhiwa"
+three_tier_app_apphub_display_name = "Apphub application by abhiwa"
+three_tier_app_apphub_criticality_type = "LOW"
+three_tier_app_apphub_environment_type = "TEST"
+three_tier_app_apphub_owner_email = "abhiwa@google.com"
+three_tier_app_apphub_owner_name = "Abhishek Tiwari"
+three_tier_app_apphub_scope_type = "REGIONAL"
 
 

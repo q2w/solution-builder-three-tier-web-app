@@ -1,9 +1,18 @@
-variable "app_location"{
+variable "location"{
     type = string
 }
 
-variable "application_name"{
+variable "application_id"{
     type = string
+}
+
+variable "display_name" {
+    type = string
+}
+
+variable "description" {
+    type = string
+    default = ""
 }
 
 variable "scope_type"{
@@ -30,10 +39,12 @@ variable "project_id"{
     type = string
 }
 
-variable "uri_service"{
-    type = string
+variable "service_uris"{
+    type = list(object({service_uri: string, service_id: string}))
+    default = []
 }
 
-variable "uri_workload"{
-    type = string
+variable "workload_uris"{
+    type = list(object({workload_uri: string, workload_id: string}))
+    default = []
 }

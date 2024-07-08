@@ -180,3 +180,26 @@ variable "three_tier_app_frontend_members" {
 variable "three_tier_app_frontend_containers" {
   type = list(object({ container_image: string, ports: object({ container_port: number})}))
 }
+
+# Variables for Apphub
+variable "three_tier_app_apphub_application_id" {
+  type = string
+}
+variable "three_tier_app_apphub_display_name" {
+  type = string
+}
+variable "three_tier_app_apphub_criticality_type" {
+  type = string
+}
+variable "three_tier_app_apphub_environment_type" {
+  type = string
+}
+variable "three_tier_app_apphub_owner_email" {
+  type = string
+}
+variable "three_tier_app_apphub_owner_name" {
+  type = string
+}
+variable "three_tier_app_apphub_scope_type" {
+  type = string
+}
