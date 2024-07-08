@@ -114,5 +114,5 @@ module "three_tier_app_apphub" {
     scope_type = var.three_tier_app_apphub_scope_type
     # This will be output from each service/workload.
     service_uris = [ { service_uri: "//compute.googleapis.com/projects/abhiwa-test-30112023/regions/us-central1/forwardingRules/a565a73f8b70642bd87d58e9adb0fdb5",
-        service_id: "a565a73f8b70642bd87d58e9adb0fdb5" } ]
+        service_id: "a565a73f8b70642bd87d58e9adb0fdb5-us-central1-abhiwa-test-3011" } ]
 }
