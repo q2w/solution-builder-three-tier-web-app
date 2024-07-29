@@ -1,9 +1,9 @@
-module "three_tier_app_sa" {
-  source        = "github.com/q2w/terraform-google-service-accounts//modules/simple-sa"
-  project_id    = var.project_id
-  name          = var.three_tier_app_sa_name
-  project_roles = var.three_tier_app_sa_project_roles
-}
+#module "three_tier_app_sa" {
+#  source        = "github.com/q2w/terraform-google-service-accounts//modules/simple-sa"
+#  project_id    = var.project_id
+#  name          = var.three_tier_app_sa_name
+#  project_roles = var.three_tier_app_sa_project_roles
+#}
 
 module "three_tier_app_cache" {
   source                  = "github.com/q2w/terraform-google-memorystore"
@@ -23,7 +23,7 @@ module "three_tier_app_database" {
   region                   = var.region
   db_name                  = var.three_tier_app_database_db_name
   name                     = var.three_tier_app_database_name
-  iam_users                = [module.three_tier_app_sa.id]
+  iam_users                = [module.three_tier_app_backend.service_account_id]
   database_version         = var.three_tier_app_database_database_version
   disk_size                = var.three_tier_app_database_disk_size
   database_flags           = var.three_tier_app_database_database_flags
@@ -34,30 +34,31 @@ module "three_tier_app_database" {
 }
 
 module "three_tier_app_backend" {
-  source          = "github.com/q2w/terraform-google-cloud-run//modules/v2"
-  project_id      = var.project_id
-  location        = var.region // why location and not region
-  service_name    = var.three_tier_app_backend_service_name
-  service_account = module.three_tier_app_sa.email
-  members         = var.three_tier_app_backend_members
+  source       = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  project_id   = var.project_id
+  location     = var.region // why location and not region
+  service_name = var.three_tier_app_backend_service_name
+  members      = var.three_tier_app_backend_members
   containers = [
     { container_image : var.three_tier_app_backend_containers[0].container_image,
       ports : var.three_tier_app_backend_containers[0].ports,
       env_vars : merge(module.three_tier_app_cache.env_vars,
         module.three_tier_app_database.env_vars,
-      module.three_tier_app_sa.env_vars)
+      var.three_tier_app_backend_env_vars)
     }
   ]
-  vpc_access       = var.three_tier_app_backend_vpc_access
-  template_scaling = var.three_tier_app_backend_template_scaling
+  vpc_access                    = var.three_tier_app_backend_vpc_access
+  template_scaling              = var.three_tier_app_backend_template_scaling
+  service_account_project_roles = var.three_tier_app_backend_service_account_project_roles
 }
 
 module "three_tier_app_frontend" {
-  source       = "github.com/q2w/terraform-google-cloud-run//modules/v2"
-  project_id   = var.project_id
-  location     = var.region
-  service_name = var.three_tier_app_frontend_service_name
-  members      = var.three_tier_app_frontend_members
+  source                 = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  project_id             = var.project_id
+  location               = var.region
+  service_name           = var.three_tier_app_frontend_service_name
+  members                = var.three_tier_app_frontend_members
+  create_service_account = false
   containers = [
     { container_image : var.three_tier_app_frontend_containers[0].container_image,
       ports : var.three_tier_app_frontend_containers[0].ports,
