@@ -9,17 +9,6 @@ variable "region" {
   description = "GCP Region"
 }
 
-# Variables for module three_tier_app_sa
-variable "three_tier_app_sa_name" {
-  type        = string
-  description = "Service account name to be created."
-}
-
-variable "three_tier_app_sa_project_roles" {
-  type    = list(string)
-  default = []
-}
-
 # Variables for module three_tier_app_cache
 variable "three_tier_app_cache_name" {
   type        = string

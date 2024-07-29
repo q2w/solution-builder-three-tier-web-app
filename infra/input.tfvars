@@ -1,12 +1,6 @@
 project_id = "abhiwa-test-30112023"
 region     = "us-central1"
 
-three_tier_app_sa_name = "service-account-backend"
-three_tier_app_sa_project_roles = [
-  "roles/cloudsql.instanceUser",
-  "roles/cloudsql.client"
-]
-
 three_tier_app_cache_name                    = "redis-instance"
 three_tier_app_cache_redis_version           = "REDIS_6_X"
 three_tier_app_cache_connect_mode            = "DIRECT_PEERING"

@@ -1,10 +1,3 @@
-#module "three_tier_app_sa" {
-#  source        = "github.com/q2w/terraform-google-service-accounts//modules/simple-sa"
-#  project_id    = var.project_id
-#  name          = var.three_tier_app_sa_name
-#  project_roles = var.three_tier_app_sa_project_roles
-#}
-
 module "three_tier_app_cache" {
   source                  = "github.com/q2w/terraform-google-memorystore"
   project                 = var.project_id
