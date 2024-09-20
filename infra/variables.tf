@@ -109,7 +109,7 @@ variable "three_tier_app_backend_template_scaling" {
 
 
 variable "three_tier_app_backend_containers" {
-  type = list(object({ container_image : string, ports : object({ container_port : number }) }))
+  type = list(object({ container_image : string, ports : object({ container_port : number }), env_vars: map(string) }))
 }
 
 variable "three_tier_app_backend_vpc_access" {
@@ -127,11 +127,6 @@ variable "three_tier_app_backend_vpc_access" {
 variable "three_tier_app_backend_service_account_project_roles" {
   type    = list(string)
   default = []
-}
-
-variable "three_tier_app_backend_env_vars" {
-  type    = map(string)
-  default = {}
 }
 
 # Variables for module three_tier_app_frontend
