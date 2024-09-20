@@ -37,7 +37,7 @@ module "three_tier_app_backend" {
       ports : var.three_tier_app_backend_containers[0].ports,
       env_vars : merge(module.three_tier_app_cache.env_vars,
         module.three_tier_app_database.env_vars,
-      var.three_tier_app_backend_env_vars)
+      var.three_tier_app_backend_containers[0].env_vars)
     }
   ]
   vpc_access                    = var.three_tier_app_backend_vpc_access
