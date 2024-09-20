@@ -24,6 +24,7 @@ three_tier_app_backend_containers = [
   {
     container_image : "gcr.io/abhiwa-test-30112023/three-tier-app-be:default-network-db"
     ports : { container_port : 80 }
+    env_vars : { "SERVICE_ACCOUNT" : "backend-service-us-central1-sa@abhiwa-test-30112023.iam.gserviceaccount.com" }
   }
 ]
 three_tier_app_backend_vpc_access = { network_interfaces : { network : "default", subnetwork : "default" } }
@@ -31,7 +32,6 @@ three_tier_app_backend_service_account_project_roles = [
   "roles/cloudsql.instanceUser",
   "roles/cloudsql.client"
 ]
-three_tier_app_backend_env_vars = { "SERVICE_ACCOUNT" : "backend-service-us-central1-sa@abhiwa-test-30112023.iam.gserviceaccount.com" }
 
 three_tier_app_frontend_service_name = "frontend-service"
 three_tier_app_frontend_members      = ["allUsers"]
