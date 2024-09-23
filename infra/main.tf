@@ -55,7 +55,7 @@ module "three_tier_app_frontend" {
   containers = [
     { container_image : var.three_tier_app_frontend_containers[0].container_image,
       ports : var.three_tier_app_frontend_containers[0].ports,
-      env_vars : { "BACKEND_SERVICE_ENDPOINT" : module.three_tier_app_backend.service_uri }
+      env_vars : { "SERVICE_ENDPOINT" : module.three_tier_app_backend.service_uri }
     }
   ]
 }

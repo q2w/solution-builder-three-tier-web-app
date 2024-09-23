@@ -82,7 +82,6 @@ func (s *SQLStorage) Init(user, password, host, name, conn string) error {
 func connectWithConnector(user, pass, name, connection string) (*sql.DB, error) {
 	cleanup, err := pgxv4.RegisterDriver(
 		"cloudsql-postgres",
-		cloudsqlconn.WithDefaultDialOptions(cloudsqlconn.WithPrivateIP()),
 		cloudsqlconn.WithIAMAuthN(),
 	)
 	if err != nil {
