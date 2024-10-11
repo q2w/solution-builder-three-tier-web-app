@@ -1,5 +1,5 @@
 module "three_tier_app_cache" {
-  source                  = "github.com/q2w/terraform-google-memorystore"
+  source                  = "github.com/terraform-google-modules/terraform-google-memorystore"
   project                 = var.project_id
   region                  = var.region
   name                    = var.three_tier_app_cache_name
@@ -11,7 +11,7 @@ module "three_tier_app_cache" {
 }
 
 module "three_tier_app_database" {
-  source                   = "github.com/q2w/terraform-google-sql-db//modules/postgresql"
+  source                   = "github.com/terraform-google-modules/terraform-google-sql-db//modules/postgresql"
   project_id               = var.project_id
   region                   = var.region
   db_name                  = var.three_tier_app_database_db_name
@@ -27,7 +27,7 @@ module "three_tier_app_database" {
 }
 
 module "three_tier_app_backend" {
-  source       = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  source       = "github.com/GoogleCloudPlatform/terraform-google-cloud-run//modules/v2"
   project_id   = var.project_id
   location     = var.region // why location and not region
   service_name = var.three_tier_app_backend_service_name
@@ -46,7 +46,7 @@ module "three_tier_app_backend" {
 }
 
 module "three_tier_app_frontend" {
-  source                 = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  source                 = "github.com/GoogleCloudPlatform/terraform-google-cloud-run//modules/v2"
   project_id             = var.project_id
   location               = var.region
   service_name           = var.three_tier_app_frontend_service_name
