@@ -14,7 +14,7 @@
 
 #!/bin/sh
 echo "RUNNING MASSAGE SCRIPT"
-API=$SERVICE_ENDPOINT
+API=$backend_SERVICE_ENDPOINT
 stripped=$(printf '%s\n' "$API" | sed 's/https:\/\///')
 echo $stripped
 sed -i "s/127.0.0.1:9000/$stripped/" /usr/share/nginx/html/js/main.js
