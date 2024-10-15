@@ -35,8 +35,24 @@ module "three_tier_app_backend" {
   containers = [
     { container_image : var.three_tier_app_backend_containers[0].container_image,
       ports : var.three_tier_app_backend_containers[0].ports,
-      env_vars : merge(module.three_tier_app_cache.env_vars,
-        module.three_tier_app_database.env_vars,
+      env_vars : merge({
+        "cloud_sql_a_CLOUD_SQL_DATABASE_HOST" : "VALUE",
+        "cloud_sql_a_CLOUD_SQL_DATABASE_CONNECTION_NAME" : "VALUE",
+        "cloud_sql_a_CLOUD_SQL_DATABASE_NAME" : "VALUE"
+      }, 
+      {
+        "cloud_sql_b_CLOUD_SQL_DATABASE_HOST" : "VALUE",
+        "cloud_sql_b_CLOUD_SQL_DATABASE_CONNECTION_NAME" : "VALUE",
+        "cloud_sql_b_CLOUD_SQL_DATABASE_NAME" : "VALUE"
+      },
+      {
+        "redis_a_REDIS_HOST" : google_redis_instance.default.host,
+        "redis_a_REDIS_PORT" : tostring(google_redis_instance.default.port)
+      },
+      {
+        "redis_b_REDIS_HOST" : google_redis_instance.default.host,
+        "redis_b_REDIS_PORT" : tostring(google_redis_instance.default.port)
+      },
       var.three_tier_app_backend_containers[0].env_vars)
     }
   ]
@@ -55,7 +71,10 @@ module "three_tier_app_frontend" {
   containers = [
     { container_image : var.three_tier_app_frontend_containers[0].container_image,
       ports : var.three_tier_app_frontend_containers[0].ports,
-      env_vars : { "SERVICE_ENDPOINT" : module.three_tier_app_backend.service_uri }
+      env_vars : merge(
+        { "cloud_run_a_SERVICE_ENDPOINT" : module.three_tier_app_backend.service_uri },
+        { "cloud_run_b_SERVICE_ENDPOINT" : module.three_tier_app_backend.service_uri },
+      )
     }
   ]
 }
