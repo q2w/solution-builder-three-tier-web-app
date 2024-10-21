@@ -105,7 +105,7 @@ variable "three-tier-app-backend-vm_image_project" {
 
 variable "three-tier-app-backend-vm_image" {
   type        = string
-  default     = "debian-12-bookworm-v20240415"
+  default     = "debian-12-bookworm-v20241009"
   description = "VM image for backend"
 }
 
@@ -122,7 +122,7 @@ variable "three-tier-app-frontend-vm_image_project" {
 
 variable "three-tier-app-frontend-vm_image" {
   type        = string
-  default     = "debian-12-bookworm-v20240415"
+  default     = "debian-12-bookworm-v20241009"
   description = "VM image for frontend"
 }
 

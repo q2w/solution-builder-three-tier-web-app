@@ -27,15 +27,16 @@ module "three_tier_app_database" {
 }
 
 module "ttwa_backend_it" {
-  source               = "github.com/terraform-google-modules/terraform-google-vm//modules/instance_template"
+  source               = "github.com/q2w/terraform-google-vm//modules/instance_template"
   project_id           = var.project_id
   region               = var.region
   source_image         = var.three-tier-app-backend-vm_image
   source_image_project = var.three-tier-app-backend-vm_image_project
   metadata             = merge(module.three_tier_app_cache.env_vars, module.three_tier_app_database.env_vars, { "SERVICE_ACCOUNT" : "960586730010-compute@developer.gserviceaccount.com" })
   startup_script       = var.backend_startup_script
-  service_account      = { email : "960586730010-compute@developer.gserviceaccount.com", scopes : ["cloud-platform"] }
+  service_account      = { email : "960586730010-compute@developer.gserviceaccount.com" }
   access_config        = [{ nat_ip : null, network_tier : "PREMIUM" }]
+  network              = "default"
 }
 
 module "three-tier-app-backend" {
@@ -44,40 +45,59 @@ module "three-tier-app-backend" {
   region            = var.region
   mig_name          = var.three-tier-app-backend-mig_service_name
   instance_template = module.ttwa_backend_it.self_link
-  named_ports = [{name: "http", port: 80}]
+  named_ports       = [{ name : "http", port : 80 }]
 }
 
-module "three-tier-app-backend-lb" {
-  source     = "github.com/terraform-google-modules/terraform-google-lb-http"
-  project = var.project_id
-  name       = "http-lb-mig"
-  # target_tags = [var.three-tier-app-backend-mig_service_name]
-  backends = {
-    default = {
-      port        = 80
-      protocol    = "HTTP"
-      port_name   = "http"
-      timeout_sec = 10
-      enable_cdn  = false
-      health_check = {
-        request_path = "/api/v1/todo"
-        port         = 80
-      }
-      log_config = {
-        enable      = true
-        sample_rate = 1.0
-      }
-      iap_config = {
-        enable = false
-      }
-      groups = [
-        {
-          group = module.three-tier-app-backend.instance_group
-        }
-      ]
-    }
+module "backend_lb" {
+  source     = "github.com/q2w/terraform-google-lb-http//modules/lb-http-backend?ref=new_submodules"
+  project_id = var.project_id
+  name       = "lb-http-backend"
+  health_check = {
+    request_path = "/api/v1/todo"
+    port         = 80
   }
+  groups = [{ group : module.three-tier-app-backend.instance_group }]
 }
+
+module "frontend_lb" {
+  source     = "github.com/q2w/terraform-google-lb-http//modules/lb-http-frontend?ref=new_submodules"
+  project_id = var.project_id
+  name       = "lb-http-frontend"
+  create_url_map = true
+  url_map_input = module.backend_lb.backend_service_info
+}
+
+# module "three-tier-app-backend-lb" {
+#   source  = "github.com/terraform-google-modules/terraform-google-lb-http"
+#   project = var.project_id
+#   name    = "http-lb-mig"
+#   # target_tags = [var.three-tier-app-backend-mig_service_name]
+#   backends = {
+#     default = {
+#       port        = 80
+#       protocol    = "HTTP"
+#       port_name   = "http"
+#       timeout_sec = 10
+#       enable_cdn  = false
+#       health_check = {
+#         request_path = "/api/v1/todo"
+#         port         = 80
+#       }
+#       log_config = {
+#         enable      = true
+#         sample_rate = 1.0
+#       }
+#       iap_config = {
+#         enable = false
+#       }
+#       groups = [
+#         {
+#           group = module.three-tier-app-backend.instance_group
+#         }
+#       ]
+#     }
+#   }
+# }
 
 # module "ttwa_frontend_it" {
 #   source = "github.com/terraform-google-modules/terraform-google-vm//modules/instance_template"

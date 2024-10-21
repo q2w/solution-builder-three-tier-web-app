@@ -4,6 +4,6 @@
 # }
 
 output "lb-ip" {
-  value = module.three-tier-app-backend-lb.external_ip
+  value       = module.frontend_lb.external_ip
   description = "Backend load balancer endpoint"
 }
