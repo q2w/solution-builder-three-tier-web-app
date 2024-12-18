@@ -14,7 +14,12 @@
 
 #!/bin/sh
 echo "RUNNING MASSAGE SCRIPT"
-API=$backend_SERVICE_ENDPOINT
+echo "Printing all environment variables:"
+env
+API=$backend_service_cloud_run_SERVICE_ENDPOINT
 stripped=$(printf '%s\n' "$API" | sed 's/https:\/\///')
 echo $stripped
 sed -i "s/127.0.0.1:9000/$stripped/" /usr/share/nginx/html/js/main.js
+sed -i "s/127.0.0.1:9000/$stripped/" /usr/share/nginx/html/east1/js/main.js
+sed -i "s/127.0.0.1:9000/$stripped/" /usr/share/nginx/html/west1/js/main.js
+sed -i "s/127.0.0.1:9000/$stripped/" /usr/share/nginx/html/central1/js/main.js

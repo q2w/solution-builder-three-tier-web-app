@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -38,13 +39,13 @@ var (
 )
 
 func main() {
-	conn := os.Getenv("CLOUD_SQL_DATABASE_CONNECTION_NAME")
-	user := os.Getenv("SERVICE_ACCOUNT")
-	host := os.Getenv("CLOUD_SQL_DATABASE_HOST")
-	name := os.Getenv("CLOUD_SQL_DATABASE_NAME")
+	conn := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_CONNECTION_NAME")
+	user := fetchServiceAccount()
+	host := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_HOST")
+	name := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_NAME")
 	pass := os.Getenv("db_pass")
-	redisHost := os.Getenv("REDIS_HOST")
-	redisPort := os.Getenv("REDIS_PORT")
+	redisHost := os.Getenv("memorystore_REDIS_HOST")
+	redisPort := os.Getenv("memorystore_REDIS_PORT")
 	port := os.Getenv("PORT")
 
 	if err := storage.Init(user, pass, host, name, conn, redisHost, redisPort, true); err != nil {
@@ -113,6 +114,37 @@ func (c *CORSRouterDecorator) ServeHTTP(rw http.ResponseWriter, req *http.Reques
 	}
 
 	c.R.ServeHTTP(rw, req)
+}
+
+func fetchServiceAccount() string {
+	// Construct the URL for the metadata server's service account endpoint.
+	url := "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email"
+
+	// Create an HTTP client with a header specifying the metadata server version.
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Metadata-Flavor", "Google")
+
+	// Send the request to the metadata server.
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	// Read the response body containing the service account email.
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	// Print the service account email.
+	fmt.Printf("Service account email: %s\n", string(body))
+
+	return string(body)
 }
 
 func httpLog(h http.Handler) http.Handler {

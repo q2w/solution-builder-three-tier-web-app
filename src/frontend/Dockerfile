@@ -14,4 +14,8 @@
 
 FROM nginx
 COPY ./www /usr/share/nginx/html
+COPY ./www /usr/share/nginx/html/west1
+COPY ./www /usr/share/nginx/html/east1
+COPY ./www /usr/share/nginx/html/central1
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 ADD massage.sh /docker-entrypoint.d/massage.sh
