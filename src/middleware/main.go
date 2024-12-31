@@ -40,7 +40,7 @@ var (
 
 func main() {
 	conn := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_CONNECTION_NAME")
-	user := fetchServiceAccount()
+	user := os.Getenv("SERVICE_ACCOUNT")
 	host := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_HOST")
 	name := os.Getenv("database_postgresql_CLOUD_SQL_DATABASE_NAME")
 	pass := os.Getenv("db_pass")
