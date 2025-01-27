@@ -1,4 +1,8 @@
-output "three-tier-app-frontend-cloud_run_service_endpoint" {
-  value = module.three-tier-app-frontend.cloud_run_service_endpoint
-  description = "Cloud Run service endpoint"
+output "backend_service_uri" {
+  description = "The main URI in which this Service is serving traffic."
+  value       = module.backend.service_uri
+}
+output "frontend_service_uri" {
+  description = "The main URI in which this Service is serving traffic."
+  value       = module.frontend.service_uri
 }
