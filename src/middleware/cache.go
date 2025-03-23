@@ -33,7 +33,7 @@ type RedisPool interface {
 var ErrCacheMiss = fmt.Errorf("item is not in cache")
 
 // NewCache returns an initialized cache ready to go.
-func NewCache(redisHost, redisPort string, enabled bool) (*Cache, error) {
+func NewCache(redisHost, redisPort, redisPassword string, enabled bool) (*Cache, error) {
 	c := &Cache{}
 
 	if redisHost == "" {
@@ -44,7 +44,7 @@ func NewCache(redisHost, redisPort string, enabled bool) (*Cache, error) {
 		return nil, fmt.Errorf("redis port is blank")
 	}
 
-	pool := c.InitPool(redisHost, redisPort)
+	pool := c.InitPool(redisHost, redisPort, redisPassword) // Pass password to InitPool
 	c.enabled = enabled
 	c.redisPool = pool
 	return c, nil
@@ -62,14 +62,24 @@ func (c *Cache) log(msg string) {
 }
 
 // InitPool starts the cache off
-func (c Cache) InitPool(redisHost, redisPort string) RedisPool {
+func (c Cache) InitPool(redisHost, redisPort, redisPassword string) RedisPool {
 	redisAddr := fmt.Sprintf("%s:%s", redisHost, redisPort)
 	msg := fmt.Sprintf("Initialized Redis at %s", redisAddr)
 	c.log(msg)
 	const maxConnections = 10
 
 	pool := redis.NewPool(func() (redis.Conn, error) {
-		return redis.Dial("tcp", redisAddr)
+		c, err := redis.Dial("tcp", redisAddr)
+		if err != nil {
+			return nil, err
+		}
+		if redisPassword != "" { // Authenticate if password is provided
+			if _, err := c.Do("AUTH", redisPassword); err != nil {
+				c.Close()
+				return nil, err
+			}
+		}
+		return c, nil
 	}, maxConnections)
 
 	return pool

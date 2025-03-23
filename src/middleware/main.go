@@ -46,9 +46,10 @@ func main() {
 	pass := os.Getenv("db_pass")
 	redisHost := os.Getenv("memorystore_REDIS_HOST")
 	redisPort := os.Getenv("memorystore_REDIS_PORT")
+	redisPass := os.Getenv("memorystore_REDIS_AUTH_STRING")
 	port := os.Getenv("PORT")
 
-	if err := storage.Init(user, pass, host, name, conn, redisHost, redisPort, true); err != nil {
+	if err := storage.Init(user, pass, host, name, conn, redisHost, redisPort, redisPass, true); err != nil {
 		log.Fatalf("cannot initialize storage systems: %s", err)
 	}
 	defer storage.sqlstorage.Close()

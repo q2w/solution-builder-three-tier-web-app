@@ -21,4 +21,4 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/$PROJECT_ID/three-tier-app-be:$_IMAGE_TAG']
 substitutions:
-  _IMAGE_TAG: latest-2911
+  _IMAGE_TAG: latest-06022025
