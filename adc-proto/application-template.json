@@ -1,0 +1,293 @@
+{
+    "name": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app",
+    "displayName": "Three tier web app",
+    "description": "Google opinionated template for web app using a three-tiered architecture with a front end, middleware, and back end (PostgreSQL database)",
+    "createTime": "2024-12-17T11:54:47.494251001Z",
+    "updateTime": "2025-03-26T07:16:05.053251260Z",
+    "iacFormat": "TERRAFORM",
+    "serializedApplicationTemplate": {
+      "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app",
+      "displayName": "Three tier web app",
+      "description": "Google opinionated template for web app using a three-tiered architecture with a front end, middleware, and back end (PostgreSQL database)",
+      "iacFormat": "TERRAFORM",
+      "components": [
+        {
+          "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/frontend-service-cloud-run",
+          "sharedTemplateRevisionUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/sharedTemplates/b1f0831f-36cd-445d-bae2-71cfed79d670/revisions/53591262-3af9-43e6-842f-9476cc32e670",
+          "parameters": [
+            {
+              "key": "location",
+              "value": "us-central1"
+            },
+            {
+              "key": "members",
+              "value": [
+                "allUsers"
+              ]
+            },
+            {
+              "key": "containers",
+              "value": [
+                {
+                  "ports": {
+                    "container_port": 80
+                  },
+                  "container_image": "gcr.io/design-center-container-repo/three-tier-app-fe:latest-02012025"
+                }
+              ]
+            },
+            {
+              "key": "volumes",
+              "value": []
+            },
+            {
+              "key": "enable_prometheus_sidecar",
+              "value": false
+            },
+            {
+              "key": "cloud_run_deletion_protection",
+              "value": false
+            }
+          ],
+          "connections": [
+            {
+              "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/frontend-service-cloud-run/connections/frontend-backend-conn",
+              "destinationComponentUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/backend-service-cloud-run"
+            }
+          ],
+          "roles": [
+            "roles/accesscontextmanager.policyAdmin",
+            "roles/orgpolicy.policyAdmin",
+            "roles/resourcemanager.folderAdmin",
+            "roles/resourcemanager.projectCreator",
+            "roles/resourcemanager.projectDeleter",
+            "roles/run.admin",
+            "roles/iam.serviceAccountAdmin",
+            "roles/artifactregistry.admin",
+            "roles/iam.serviceAccountUser",
+            "roles/serviceusage.serviceUsageViewer",
+            "roles/cloudkms.admin",
+            "roles/resourcemanager.projectIamAdmin",
+            "roles/serviceusage.serviceUsageAdmin"
+          ],
+          "apis": [
+            "cloudresourcemanager.googleapis.com",
+            "storage-api.googleapis.com",
+            "serviceusage.googleapis.com",
+            "run.googleapis.com",
+            "cloudkms.googleapis.com",
+            "iam.googleapis.com",
+            "accesscontextmanager.googleapis.com",
+            "cloudbilling.googleapis.com",
+            "monitoring.googleapis.com",
+            "compute.googleapis.com"
+          ]
+        },
+        {
+          "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/backend-service-cloud-run",
+          "sharedTemplateRevisionUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/sharedTemplates/b1f0831f-36cd-445d-bae2-71cfed79d670/revisions/53591262-3af9-43e6-842f-9476cc32e670",
+          "parameters": [
+            {
+              "key": "location",
+              "value": "us-central1"
+            },
+            {
+              "key": "members",
+              "value": [
+                "allUsers"
+              ]
+            },
+            {
+              "key": "containers",
+              "value": [
+                {
+                  "container_name": "service-container",
+                  "container_image": "gcr.io/design-center-container-repo/three-tier-app-be:latest-06022025",
+                  "ports": {
+                    "container_port": 80
+                  }
+                }
+              ]
+            },
+            {
+              "key": "volumes",
+              "value": []
+            },
+            {
+              "key": "cloud_run_deletion_protection",
+              "value": false
+            },
+            {
+              "key": "vpc_access",
+              "value": null
+            }
+          ],
+          "connections": [
+            {
+              "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/backend-service-cloud-run/connections/backend-postgresql-conn",
+              "destinationComponentUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/database-postgresql"
+            },
+            {
+              "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/backend-service-cloud-run/connections/backend-redis-conn",
+              "destinationComponentUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/memorystore"
+            }
+          ],
+          "roles": [
+            "roles/accesscontextmanager.policyAdmin",
+            "roles/orgpolicy.policyAdmin",
+            "roles/resourcemanager.folderAdmin",
+            "roles/resourcemanager.projectCreator",
+            "roles/resourcemanager.projectDeleter",
+            "roles/run.admin",
+            "roles/iam.serviceAccountAdmin",
+            "roles/artifactregistry.admin",
+            "roles/iam.serviceAccountUser",
+            "roles/serviceusage.serviceUsageViewer",
+            "roles/cloudkms.admin",
+            "roles/resourcemanager.projectIamAdmin",
+            "roles/serviceusage.serviceUsageAdmin"
+          ],
+          "apis": [
+            "cloudresourcemanager.googleapis.com",
+            "storage-api.googleapis.com",
+            "serviceusage.googleapis.com",
+            "run.googleapis.com",
+            "cloudkms.googleapis.com",
+            "iam.googleapis.com",
+            "accesscontextmanager.googleapis.com",
+            "cloudbilling.googleapis.com",
+            "monitoring.googleapis.com",
+            "compute.googleapis.com"
+          ]
+        },
+        {
+          "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/database-postgresql",
+          "sharedTemplateRevisionUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/sharedTemplates/aa10251a-c682-409e-95ad-1d042aa89b72/revisions/25a10abe-fca7-47fd-924d-932f54c23018",
+          "parameters": [
+            {
+              "key": "region",
+              "value": "us-central1"
+            },
+            {
+              "key": "db_name",
+              "value": "database"
+            },
+            {
+              "key": "database_version",
+              "value": "POSTGRES_14"
+            },
+            {
+              "key": "database_flags",
+              "value": [
+                {
+                  "name": "cloudsql.iam_authentication",
+                  "value": "on"
+                }
+              ]
+            },
+            {
+              "key": "deletion_protection",
+              "value": false
+            },
+            {
+              "key": "deletion_protection_enabled",
+              "value": false
+            },
+            {
+              "key": "user_deletion_policy",
+              "value": "ABANDON"
+            },
+            {
+              "key": "database_deletion_policy",
+              "value": "ABANDON"
+            },
+            {
+              "key": "enable_default_user",
+              "value": false
+            },
+            {
+              "key": "tier",
+              "value": "db-perf-optimized-N-8"
+            }
+          ],
+          "roles": [
+            "roles/cloudkms.admin",
+            "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+            "roles/cloudscheduler.admin",
+            "roles/cloudsql.admin",
+            "roles/compute.admin",
+            "roles/compute.networkAdmin",
+            "roles/iam.serviceAccountAdmin",
+            "roles/iam.serviceAccountUser",
+            "roles/monitoring.editor",
+            "roles/resourcemanager.projectIamAdmin",
+            "roles/storage.admin",
+            "roles/workflows.admin",
+            "roles/serviceusage.serviceUsageAdmin"
+          ],
+          "apis": [
+            "cloudkms.googleapis.com",
+            "cloudresourcemanager.googleapis.com",
+            "cloudscheduler.googleapis.com",
+            "compute.googleapis.com",
+            "iam.googleapis.com",
+            "monitoring.googleapis.com",
+            "servicenetworking.googleapis.com",
+            "serviceusage.googleapis.com",
+            "sqladmin.googleapis.com",
+            "workflows.googleapis.com"
+          ]
+        },
+        {
+          "uri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/components/memorystore",
+          "sharedTemplateRevisionUri": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/sharedTemplates/fbb5fe89-eeb6-4f87-812c-2459df29cbb0/revisions/1775a4fc-ced9-42b9-81ed-90f85a6e2b54",
+          "parameters": [
+            {
+              "key": "region",
+              "value": "us-central1"
+            },
+            {
+              "key": "redis_version",
+              "value": "REDIS_6_X"
+            },
+            {
+              "key": "connect_mode",
+              "value": "DIRECT_PEERING"
+            },
+            {
+              "key": "tier",
+              "value": "BASIC"
+            },
+            {
+              "key": "transit_encryption_mode",
+              "value": "DISABLED"
+            },
+            {
+              "key": "memory_size_gb",
+              "value": null
+            }
+          ],
+          "roles": [
+            "roles/memorystore.admin",
+            "roles/redis.admin",
+            "roles/memcache.admin",
+            "roles/compute.networkAdmin",
+            "roles/resourcemanager.projectIamAdmin",
+            "roles/serviceusage.serviceUsageAdmin"
+          ],
+          "apis": [
+            "cloudresourcemanager.googleapis.com",
+            "serviceusage.googleapis.com",
+            "redis.googleapis.com",
+            "memcache.googleapis.com",
+            "serviceconsumermanagement.googleapis.com",
+            "networkconnectivity.googleapis.com",
+            "compute.googleapis.com",
+            "memorystore.googleapis.com"
+          ]
+        }
+      ]
+    },
+    "latestRevision": "projects/gcpdesigncenter-autopush/locations/us-central1/spaces/googlespace/applicationTemplates/three-tier-web-app/revisions/r-7"
+  }
+  
